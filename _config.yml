@@ -3,7 +3,7 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Hexo
+title: Cosima
 subtitle: ''
 description: ''
 keywords:
@@ -105,3 +105,6 @@ deploy:
   type: 'git'
   repo: https://github.com/Cosimac/Cosimac.github.io.git
   branch: master
+
+server:
+  compress: true 
