@@ -1,7 +1,7 @@
 <!--
  * @Date: 2022-05-02 19:08:48
  * @LastEditors: Cosima
- * @LastEditTime: 2022-05-02 19:42:23
+ * @LastEditTime: 2022-05-19 23:27:08
  * @FilePath: /cosima/readme.md
 -->
 Cosima-blog
@@ -37,11 +37,17 @@ hexo new "post title with whitespace"
 ```
 $ hexo new [layout] <title>
 ```
+## 项目代码打包构建
+```
+$ hexo generate
+$ hexo g
+```
 ## 项目代码打包构建并发布
 ```
 $ hexo generate -d
 ```
 ## 清除打包文件
 ```
+$ hexo c
 $ hexo clean
 ```
