@@ -6,6 +6,13 @@ tags:
 
 ## Git 常用语法
 
+### Git 概念
++ Workspace：工作区
++ Index / Stage：暂存区
++ Repository：仓库区（或本地仓库）
++ Remote：远程仓库
+![Git](https://www.ruanyifeng.com/blogimg/asset/2015/bg2015120901.png)
+
 ### git config
 配置 Git 的相关参数。
 Git 一共有3个配置文件：
@@ -13,7 +20,7 @@ Git 一共有3个配置文件：
 2. 全局配置文件：Mac 系统在 ~/.gitconfig，Windows 系统在 C:\Users\<用户名>\.gitconfig。
 3. 系统级的配置文件：在 Git 的安装目录下（Mac 系统下安装目录在 /usr/local/git）的 etc 文件夹中的 gitconfig。
 
-```bash
+```
 # 查看配置信息
 # --local：仓库级，--global：全局级，--system：系统级
 $ git config <--local | --global | --system> -l
@@ -61,7 +68,7 @@ $ git config --global credential.helper store
 ### git clone
 从远程仓库克隆一个版本库到本地。
 
-```bash
+```
 # 默认在当前目录下创建和版本库名相同的文件夹并下载版本到该文件夹下
 $ git clone <远程仓库的网址>
 
@@ -75,7 +82,7 @@ $ git clone <远程仓库的网址> -b <分支名称> <本地目录>
 ### git init
 初始化项目所在目录，初始化后会在当前目录下出现一个名为 .git 的目录。
 
-```bash
+```
 # 初始化本地仓库，在当前目录下生成 .git 文件夹
 $ git init
 ```
@@ -83,7 +90,7 @@ $ git init
 ### git status
 查看本地仓库的状态。
 
-```bash
+```
 # 查看本地仓库的状态
 $ git status
 
@@ -96,7 +103,7 @@ $ git status -s
 ### git remote
 操作远程库。
 
-```bash
+```
 # 列出已经存在的远程仓库
 $ git remote
 
@@ -121,7 +128,7 @@ $ git remote set-url <远程仓库的别名> <新的远程仓库URL地址>
 ### git branch
 操作 Git 的分支命令。
 
-```bash
+```
 # 列出本地的所有分支，当前所在分支以 "*" 标出
 $ git branch
 
@@ -148,7 +155,7 @@ $ git branch -D <分支名称>
 ### git checkout
 检出命令，用于创建、切换分支等。
 
-```bash
+```
 # 切换到已存在的指定分支
 $ git checkout <分支名称>
 
@@ -166,7 +173,7 @@ $ git checkout <文件路径>
 ### git cherry-pick
 把已经提交的记录合并到当前分支。
 
-```bash
+```
 # 把已经提交的记录合并到当前分支
 $ git cherry-pick <commit ID>
 ```
@@ -174,7 +181,7 @@ $ git cherry-pick <commit ID>
 ### git add
 把要提交的文件的信息添加到暂存区中。当使用 git commit 时，将依据暂存区中的内容来进行文件的提交
 
-```bash
+```
 # 把指定的文件添加到暂存区中
 $ git add <文件路径>
 
@@ -194,7 +201,7 @@ $ git add --interactive [<文件路径>]
 ### git commit
 将暂存区中的文件提交到本地仓库中。
 
-```bash
+```
 # 把暂存区中的文件提交到本地仓库，调用文本编辑器输入该次提交的描述信息
 $ git commit
 
@@ -208,3 +215,171 @@ $ git commit -a -m "<提交的描述信息>"
 # 修改上次提交的描述信息
 $ git commit --amend
 ```
+### git fetch
+从远程仓库获取最新的版本到本地的 tmp 分支上。
+
+```
+# 将远程仓库所有分支的最新版本全部取回到本地
+$ git fetch <远程仓库的别名>
+
+# 将远程仓库指定分支的最新版本取回到本地
+$ git fetch <远程主机名> <分支名>
+```
+### git merge
+合并分支
+
+```
+# 把指定的分支合并到当前所在的分支下
+$ git merge <分支名称>
+```
+### git diff
+比较版本之间的差异。
+
+```
+# 比较当前文件和暂存区中文件的差异，显示没有暂存起来的更改
+$ git diff
+
+# 比较暂存区中的文件和上次提交时的差异
+$ git diff --cached
+$ git diff --staged
+
+# 比较当前文件和上次提交时的差异
+$ git diff HEAD
+
+# 查看从指定的版本之后改动的内容
+$ git diff <commit ID>
+
+# 比较两个分支之间的差异
+$ git diff <分支名称> <分支名称>
+
+# 查看两个分支分开后各自的改动内容
+$ git diff <分支名称>...<分支名称>
+```
+### git pull
+从远程仓库获取最新版本并合并到本地。
+首先会执行 git fetch，然后执行 git merge，把获取的分支的 HEAD 合并到当前分支。
+
+```
+# 从远程仓库获取最新版本。
+$ git pull
+```
+### git push
+把本地仓库的提交推送到远程仓库。
+
+```
+# 把本地仓库的分支推送到远程仓库的指定分支
+$ git push <远程仓库的别名> <本地分支名>:<远程分支名>
+
+# 删除指定的远程仓库的分支
+$ git push <远程仓库的别名> :<远程分支名>
+$ git push <远程仓库的别名> --delete <远程分支名>
+# 为推送当前分支并建立与远程上游的跟踪，使用
+$ git push --set-upstream <远程仓库别名> <远程分支名>
+$ git push --set-upstream origin master
+# 强行推送本地记录
+$ git push -u origin +master
+```
+### git log
+显示提交的记录。
+
+```
+# 打印所有的提交记录
+$ git log
+
+# 打印从第一次提交到指定的提交的记录
+$ git log <commit ID>
+
+# 打印指定数量的最新提交的记录
+$ git log -<指定的数量>
+```
+### git reset
+还原提交记录。
+
+```
+# 重置暂存区，但文件不受影响
+# 相当于将用 "git add" 命令更新到暂存区的内容撤出暂存区，可以指定文件
+# 没有指定 commit ID 则默认为当前 HEAD
+$ git reset [<文件路径>]
+$ git reset --mixed [<文件路径>]
+
+# 将 HEAD 的指向改变，撤销到指定的提交记录，文件未修改
+$ git reset <commit ID>
+$ git reset --mixed <commit ID>
+
+# 将 HEAD 的指向改变，撤销到指定的提交记录，文件未修改
+# 相当于调用 "git reset --mixed" 命令后又做了一次 "git add"
+$ git reset --soft <commit ID>
+
+# 将 HEAD 的指向改变，撤销到指定的提交记录，文件也修改了
+$ git reset --hard <commit ID>
+```
+### git revert
+生成一个新的提交来撤销某次提交，此次提交之前的所有提交都会被保留。
+
+```
+# 生成一个新的提交来撤销某次提交
+$ git revert <commit ID>
+```
+### git tag
+操作标签的命令。
+
+```
+# 打印所有的标签
+$ git tag
+
+# 添加轻量标签，指向提交对象的引用，可以指定之前的提交记录
+$ git tag <标签名称> [<commit ID>]
+
+# 添加带有描述信息的附注标签，可以指定之前的提交记录
+$ git tag -a <标签名称> -m <标签描述信息> [<commit ID>]
+
+# 切换到指定的标签
+$ git checkout <标签名称>
+
+# 查看标签的信息
+$ git show <标签名称>
+
+# 删除指定的标签
+$ git tag -d <标签名称>
+
+# 将指定的标签提交到远程仓库
+$ git push <远程仓库的别名> <标签名称>
+
+# 将本地所有的标签全部提交到远程仓库
+$ git push <远程仓库的别名> –tags
+# 强push
+$ git push origin <远程分支名> --force
+```
+### git mv
+重命名文件或者文件夹。
+
+```
+# 重命名指定的文件或者文件夹
+$ git mv <源文件/文件夹> <目标文件/文件夹>
+```
+### git rm
+删除文件或者文件夹。
+
+```
+# 移除跟踪指定的文件，并从本地仓库的文件夹中删除
+$ git rm <文件路径>
+
+# 移除跟踪指定的文件夹，并从本地仓库的文件夹中删除
+$ git rm -r <文件夹路径>
+
+# 移除跟踪指定的文件，在本地仓库的文件夹中保留该文件
+$ git rm --cached
+```
+## Git操作场景(🌰)
+### 1. 删除掉本地不存在的远程分支
+多人合作开发时，如果远程的分支被其他开发删除掉，在本地执行 git branch --all 依然会显示该远程分支，可使用下列的命令进行删除：
+
+```
+# 使用 pull 命令，添加 -p 参数
+$ git pull -p
+
+# 等同于下面的命令
+$ git fetch -p
+$ git fetch --prune origin
+```
+
