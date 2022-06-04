@@ -370,9 +370,23 @@ $ git rm -r <文件夹路径>
 # 移除跟踪指定的文件，在本地仓库的文件夹中保留该文件
 $ git rm --cached
 ```
+### git rebase
+Rebase 实际上就是取出一系列的提交记录，“复制”它们，然后在另外一个地方逐个的放下去。
+Rebase 的优势就是可以创造更线性的提交历史，这听上去有些难以理解。如果只允许使用 Rebase 的话，代码库的提交历史将会变得异常清晰。
+
+```
+# 将当前分支变基到目标分支
+$ git rebase <远程分支名>
+# 表示继续下一个冲突(git rebase --continue 就相当于 git commit)
+$ git rebase --continue
+# 表示跳过当前冲突
+$ git rebase --skip
+# 表示退出rebase模式, 回到运行git rebase master命令之前的状态
+$ git rebase --abort
+```
 ## Git操作场景(🌰)
-### 1. 删除掉本地不存在的远程分支
-多人合作开发时，如果远程的分支被其他开发删除掉，在本地执行 git branch --all 依然会显示该远程分支，可使用下列的命令进行删除：
+### 删除掉本地不存在的远程分支
+多人合作开发时，如果远程的分支被其他开发删除掉，在本地执行 git branch --all 依然会显示该远程分支，可使用下列的命令进行删除
 
 ```
 # 使用 pull 命令，添加 -p 参数
@@ -382,4 +396,5 @@ $ git pull -p
 $ git fetch -p
 $ git fetch --prune origin
 ```
+### 
 
