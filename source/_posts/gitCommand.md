@@ -263,7 +263,16 @@ $ git commit -a -m "<提交的描述信息>"
 $ git commit --amend
 ```
 ### git fetch
-从远程仓库获取最新的版本到本地的 tmp 分支上。
+git fetch 实际上将本地仓库中的远程分支更新成了远程仓库相应分支最新的状态。
+git fetch 完成了仅有的但是很重要的两步:
++ 从远程仓库下载本地仓库中缺失的提交记录
++ 更新远程分支指针(如 o/main)
+
+git fetch 不会做的事: 
++ git fetch 并不会改变你本地仓库的状态。它不会更新你的 main 分支，也不会修改你磁盘上的文件。
+
+理解这一点很重要，因为许多开发人员误以为执行了 git fetch 以后，他们本地仓库就与远程仓库同步了。它可能已经将进行这一操作所需的所有数据都下载了下来，但是并没有修改你本地的文件。
+所以, 你可以将 git fetch 的理解为单纯的下载操作。
 
 ```
 # 将远程仓库所有分支的最新版本全部取回到本地
@@ -309,13 +318,34 @@ $ git diff <分支名称>...<分支名称>
 ```
 # 从远程仓库获取最新版本。
 $ git pull
-```
-### git push
-把本地仓库的提交推送到远程仓库。
+
+# git pull origin foo 相当于：git fetch origin foo; git merge o/foo
+# git pull origin bar~1:bugFix 相当于：git fetch origin bar~1:bugFix; git merge bugFix
 
 ```
+### git push
+把本地仓库的提交推送到远程仓库。远程仓库对应的分支会指向最新的提交，本地的远程分支也会指向最新的提交记录
+
+```
+# push 参数1
+# 把本地仓库的分支推送到远程仓库
+$ git push <远程仓库的别名> <本地分支名>
+$ git push <remote> <place>
+$ git push origin main(本地分支)
+# 把这个命令翻译过来就是：
+# 切到本地仓库中的“main”分支，获取所有的提交，再到远程仓库“origin”中找到“main”分支，将远程仓库中没有的提交记录都添加上去，搞定之后告诉我。
+# 我们通过“place”参数来告诉 Git 提交记录来自于 main, 要推送到远程仓库中的 main。它实际就是要同步的两个仓库的位置。
+# 需要注意的是，因为我们通过指定参数告诉了 Git 所有它需要的信息, 所以它就忽略了我们所检出的分支的属性！
+
+# push 参数2
 # 把本地仓库的分支推送到远程仓库的指定分支
 $ git push <远程仓库的别名> <本地分支名>:<远程分支名>
+# 当为 git push 指定 place 参数为 main 时，我们同时指定了提交记录的来源和去向。
+# 你可能想问 —— 如果来源和去向分支的名称不同呢？比如你想把本地的 foo 分支推送到远程仓库中的 bar 分支。
+# 当然是可以的啦 :) Git 拥有超强的灵活性（有点过于灵活了）
+$ git push origin <source>:<destination>
+# source 可以是任何 Git 能识别的位置：
+$ git push origin HEAD^:foo
 
 # 删除指定的远程仓库的分支
 $ git push <远程仓库的别名> :<远程分支名>
@@ -430,10 +460,17 @@ Rebase 的优势就是可以创造更线性的提交历史，这听上去有些�
 ```
 # 将当前分支变基到目标分支
 $ git rebase <远程分支名>
+
+# 将某个分支变基到另一个分支上 (将分支b变基到分支a上)
+$ git rebase <分支名a> <分支名b>
+$ git rebase a b
+
 # 表示继续下一个冲突(git rebase --continue 就相当于 git commit)
 $ git rebase --continue
+
 # 表示跳过当前冲突
 $ git rebase --skip
+
 # 表示退出rebase模式, 回到运行git rebase master命令之前的状态
 $ git rebase --abort
 ```
@@ -472,4 +509,68 @@ $ git fetch --prune origin
 $ git rebase -i
 $ git cherry-pick 
 ```
+### 本地分支合并远端分支
 
+```
+# 当远程分支中有新的提交时，你可以像合并本地分支那样来合并远程分支。也就是说就是你可以执行以下命令:
+$ git cherry-pick o/main
+$ git rebase o/main
+$ git merge o/main
+...
+```
+### 远程分支代码比本地分支代码新的情况进行提交
+假设你周一克隆了一个仓库，然后开始研发某个新功能。到周五时，你新功能开发测试完毕，可以发布了。但是你的同事这周写了一堆代码，还改了许多你的功能中使用的 API，这些变动会导致你新开发的功能变得不可用。但是他们已经将那些提交推送到远程仓库了，因此你的工作就变成了基于项目旧版的代码，与远程仓库最新的代码不匹配了。
+
+这种情况下, git push 就不知道该如何操作了。如果你执行 git push，Git 应该让远程仓库回到星期一那天的状态吗？还是直接在新代码的基础上添加你的代码，亦或由于你的提交已经过时而直接忽略你的提交？
+因为这情况（历史偏离）有许多的不确定性，Git 是不会允许你 push 变更的。实际上它会强制你先合并远程最新的代码，然后才能分享你的工作。
+
+```
+# 方式1: rebase
+# 我们用 git fetch 更新了本地仓库中的远程分支，然后用 rebase 将我们的工作移动到最新的提交记录下，最后再用 git push 推送到远程仓库。
+$ git fetch; git rebase orgin/main; git push
+
+# 方式2: merge
+# git merge 不会移动你的工作（它会创建新的合并提交），但是它会告诉 Git 你已经合并了远程仓库的所有变更。这是因为远程分支现在是你本地分支的祖先，也就是说你的提交已经包含了远程分支的所有变化。
+# 我们用 git fetch 更新了本地仓库中的远程分支，然后合并了新变更到我们的本地分支（为了包含远程仓库的变更），最后我们用 git push 把工作推送到远程仓库
+$ git fetch; git merge orgin/main; git push
+
+# 方式3: pull / pull --rebase
+# 要敲那么多命令，有没有更简单一点的？前面已经介绍过 git pull 就是 fetch 和 merge 的简写，类似的 git pull --rebase 就是 fetch 和 rebase 的简写！
+$ git pull --rebase; git push
+$ git pull; git push
+```
+### 远程跟踪
+自定义远程跟踪分支：你可以让任意分支跟踪 o/main, 然后该分支会像 main 分支一样得到隐含的 push 目的地以及 merge 的目标。 这意味着你可以在分支 totallyNotMain 上执行 git push，将工作推送到远程仓库的 main 分支上。
+**需要注意的是 main 并未被更新**
+有两种方法设置这个属性，第一种就是通过远程分支检出一个新的分支，执行:
+```
+# 1: git checkout -b
+$ git checkout -b totallyNotMain o/main
+就可以创建一个名为 totallyNotMain 的分支，它跟踪远程分支 o/main。
+
+# 2: git branch -u
+$ git branch -u o/main foo
+# 这样 foo 就会跟踪 o/main 了。如果当前就在 foo 分支上, 还可以省略 foo：
+$ git branch -u o/main
+```
+### fetch的参数
+我们刚学习了 git push 的参数，很酷的 <place> 参数，还有用冒号分隔的 refspecs（<source>:<destination>）。 这些参数可以用于 git fetch 吗？
+你猜中了！git fetch 的参数和 git push 极其相似。他们的概念是相同的，只是方向相反罢了（因为现在你是下载，而非上传）
+<place> 参数
+如果你像如下命令这样为 git fetch 设置 的话：
+git fetch origin foo
+Git 会到远程仓库的 foo 分支上，然后获取所有本地不存在的提交，放到本地的 o/foo 上。
+通过指定 place...
+$ git fetch origin foo
+我们只下载了远程仓库中 foo 分支中的最新提交记录，并更新了 o/foo
+
+“如果我们指定 <source>:<destination> 会发生什么呢？”
+如果你觉得直接更新本地分支很爽，那你就用冒号分隔的 refspec 吧。不过，你不能在当前检出的分支上干这个事，但是其它分支是可以的。
+这里有一点是需要注意的 —— source 现在指的是远程仓库中的位置，而 <destination> 才是要放置提交的本地仓库的位置。它与 git push 刚好相反，这是可以讲的通的，因为我们在往相反的方向传送数据。
+理论上虽然行的通，但开发人员很少这么做。我在这里介绍它主要是为了从概念上说明 fetch 和 push 的相似性，只是方向相反罢了。
+
+ps1:
+$ git fetch origin foo~1:bar
+哇! 看见了吧, Git 将 foo~1 解析成一个 origin 仓库的位置，然后将那些提交记录下载到了本地的 bar 分支（一个本地分支）上。注意由于我们指定了目标分支，foo 和 o/foo 都没有被更新。
+
+如果 git fetch 没有参数，它会下载所有的提交记录到各个远程分支……
