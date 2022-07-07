@@ -1,0 +1,783 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon/favicon.png">
+  <link rel="icon" href="/img/favicon/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Cosima">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="常用shell命令1、ls：查看文件常用参数： -l 显示详细的文件信息 -a 显示隐藏文件 2、cd：切换工作目录cd ~ 切换到当前用户的home目录 cd - 退回切换前的目录 cd .. 返回上一级目录 cd  不指定目录，切换到当前用户的home目录 3、pwd：显示用户当前目录4、mkdir：创建目录常用参数： -p 若指定路径的父目录不存在则一并创建 5、cp：复制常用参数： -r">
+<meta property="og:type" content="article">
+<meta property="og:title" content="常用shell命令">
+<meta property="og:url" content="http://example.com/2022/05/02/shellCommand/index.html">
+<meta property="og:site_name" content="Cosima">
+<meta property="og:description" content="常用shell命令1、ls：查看文件常用参数： -l 显示详细的文件信息 -a 显示隐藏文件 2、cd：切换工作目录cd ~ 切换到当前用户的home目录 cd - 退回切换前的目录 cd .. 返回上一级目录 cd  不指定目录，切换到当前用户的home目录 3、pwd：显示用户当前目录4、mkdir：创建目录常用参数： -p 若指定路径的父目录不存在则一并创建 5、cp：复制常用参数： -r">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-05-02T11:07:48.000Z">
+<meta property="article:modified_time" content="2022-06-28T06:55:33.153Z">
+<meta property="article:author" content="Cosima">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>常用shell命令 - Cosima</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.0","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Cosima</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg/bg.webp') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="常用shell命令"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-05-02 19:07" pubdate>
+          2022年5月2日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          2.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          22 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">常用shell命令</h1>
+            
+            <div class="markdown-body">
+              
+              <h1 id="常用shell命令"><a href="#常用shell命令" class="headerlink" title="常用shell命令"></a>常用shell命令</h1><h2 id="1、ls：查看文件"><a href="#1、ls：查看文件" class="headerlink" title="1、ls：查看文件"></a>1、ls：查看文件</h2><p>常用参数：</p>
+<p>-l 显示详细的文件信息</p>
+<p>-a 显示隐藏文件</p>
+<h2 id="2、cd：切换工作目录"><a href="#2、cd：切换工作目录" class="headerlink" title="2、cd：切换工作目录"></a>2、cd：切换工作目录</h2><p>cd ~ 切换到当前用户的home目录</p>
+<p>cd - 退回切换前的目录</p>
+<p>cd .. 返回上一级目录</p>
+<p>cd  不指定目录，切换到当前用户的home目录</p>
+<h2 id="3、pwd：显示用户当前目录"><a href="#3、pwd：显示用户当前目录" class="headerlink" title="3、pwd：显示用户当前目录"></a>3、pwd：显示用户当前目录</h2><h2 id="4、mkdir：创建目录"><a href="#4、mkdir：创建目录" class="headerlink" title="4、mkdir：创建目录"></a>4、mkdir：创建目录</h2><p>常用参数：</p>
+<p>-p 若指定路径的父目录不存在则一并创建</p>
+<h2 id="5、cp：复制"><a href="#5、cp：复制" class="headerlink" title="5、cp：复制"></a>5、cp：复制</h2><p>常用参数：</p>
+<p>-r 递归复制，复制的数据会使用新的时间戳等信息</p>
+<p>-f 强制复制</p>
+<p>-a 递归复制，保留原文件属性的前提下复制文件</p>
+<h2 id="6、rm：删除"><a href="#6、rm：删除" class="headerlink" title="6、rm：删除"></a>6、rm：删除</h2><p>常用参数：</p>
+<p>-r删除目录及其子目录下的所有内容</p>
+<p>-f 强制删除</p>
+<p>-i 删除文件前先询问确认</p>
+<h2 id="7、mv：移动"><a href="#7、mv：移动" class="headerlink" title="7、mv：移动"></a>7、mv：移动</h2><p>mv 1.txt 2.txt  将1.txt重命名为2.txt</p>
+<h2 id="8、du：显示目录所占用的磁盘空间"><a href="#8、du：显示目录所占用的磁盘空间" class="headerlink" title="8、du：显示目录所占用的磁盘空间"></a>8、du：显示目录所占用的磁盘空间</h2><p>常用参数：</p>
+<p>-s 只显示当前目录的大小,单位kb</p>
+<p>-h 以K M G为单位，提高可读性</p>
+<p>–max-depth&#x3D;1 只查看当前目录下的子目录大小</p>
+<h2 id="9、cat：查看文件内容"><a href="#9、cat：查看文件内容" class="headerlink" title="9、cat：查看文件内容"></a>9、cat：查看文件内容</h2><p>cat file1 file2 &gt; file3 将file1和file2的内容结合起来写到file3中，file3以前的内容被清空</p>
+<p>cat file1 file2 &gt;&gt; file3 将file1和file2的内容结合起来追加到file3中</p>
+<h2 id="10、echo：输出字符串"><a href="#10、echo：输出字符串" class="headerlink" title="10、echo：输出字符串"></a>10、echo：输出字符串</h2><p>常用参数：</p>
+<p>-n 显示字符串时在最后自动换行</p>
+<p>-e 支持转义字符</p>
+<p>和cat一样可以用重定向符“&gt;”和“&gt;&gt;”将输出的内容写到文件</p>
+<h2 id="11、more-less：分页查看文件"><a href="#11、more-less：分页查看文件" class="headerlink" title="11、more,less：分页查看文件"></a>11、more,less：分页查看文件</h2><p>常用动作命令：</p>
+<p>回车键<br>向下移动一行</p>
+<p>y  向上移动一行</p>
+<p>空格键<br>向下滚动一屏</p>
+<p>b  向上滚动一屏</p>
+<p>d  向下滚动半屏</p>
+<p>u  向上滚动半屏</p>
+<p>q  退出</p>
+<p>less还可以用方向键控制往上或往下滚动文件，more不行</p>
+<h2 id="12、grep：搜索文本"><a href="#12、grep：搜索文本" class="headerlink" title="12、grep：搜索文本"></a>12、grep：搜索文本</h2><p>常用参数：</p>
+<p>-i 忽略大小写</p>
+<p>-n 显示行号</p>
+<p>在shell脚本中使用时，搜索成功返回0，不成功返回1，搜索的文件不存在返回2</p>
+<h2 id="13、find：搜索文件"><a href="#13、find：搜索文件" class="headerlink" title="13、find：搜索文件"></a>13、find：搜索文件</h2><p>常用参数：</p>
+<p>-name 按照名字查找</p>
+<p>-type 按照文件类型查找（f一般文件  d目录  l 链接文件）</p>
+<p>-size 按照文件大小查找</p>
+<h2 id="14、ln：创建链接"><a href="#14、ln：创建链接" class="headerlink" title="14、ln：创建链接"></a>14、ln：创建链接</h2><p>常用参数：</p>
+<p>-s 创建软链接（创建链接的时候尽量用绝对路径）</p>
+<p>ln -s  &#x2F;home&#x2F;nfs&#x2F;C6DAI  &#x2F;home&#x2F;yangqing&#x2F;C6DAI</p>
+<h2 id="15、mount：挂载"><a href="#15、mount：挂载" class="headerlink" title="15、mount：挂载"></a>15、mount：挂载</h2><p>mount -t nfs -o nolock,tcp<br>192.168.150.21:&#x2F;home&#x2F;yangqing&#x2F;D53.5<br>&#x2F;usr&#x2F;local</p>
+<p>mount 不加任何参数是查看当前挂载状态</p>
+<p>umount<br>&#x2F;usr&#x2F;local 卸载</p>
+<h2 id="16、chmod：权限设置"><a href="#16、chmod：权限设置" class="headerlink" title="16、chmod：权限设置"></a>16、chmod：权限设置</h2><p>常用参数：</p>
+<p>-R 递归修改权限</p>
+<p>u:所有者权限  g:所属组权限  o:其他用户权限   a:全部用户</p>
+<p>r: 读权限，数字表示为4   w:写权限，数字表示为2   x:执行权限，数字表示为1</p>
+<p>chmod 777 file  等同于 chmod a&#x3D;rwx file  所有用户有可读可写可执行权限</p>
+<h2 id="17、kill：删除执行中的程序"><a href="#17、kill：删除执行中的程序" class="headerlink" title="17、kill：删除执行中的程序"></a>17、kill：删除执行中的程序</h2><p>kill -9 pid<br>彻底杀死程序</p>
+<p>killall * 杀死当前目录所有程序</p>
+<h2 id="18、sed：编辑文本"><a href="#18、sed：编辑文本" class="headerlink" title="18、sed：编辑文本"></a>18、sed：编辑文本</h2><p>常用参数：</p>
+<p>-i 直接编辑源文件</p>
+<p>-e 执行多个命令   sed ‘&#x2F;www&#x2F;d;&#x2F;fff&#x2F;d’</p>
+<p>指令动作：</p>
+<p>a 新增，当前行的后一行新增一行</p>
+<p>i 插入，当前行的前一行插入新的一行</p>
+<p>d 删除   sed ‘3,$d’ file  删除第3到最后一行</p>
+<p>c 替换，以行为单位替换   sed ‘2,5c No 2-5 number’ file  第2-5行整体替换No 2-5<br>number</p>
+<p>s 字符串替换  sed ‘s&#x2F;home&#x2F;root&#x2F;g’ file    将文件中所有home替换为root</p>
+<h2 id="19、tar：压缩"><a href="#19、tar：压缩" class="headerlink" title="19、tar：压缩"></a>19、tar：压缩</h2><p>常用参数：</p>
+<p>-c 建立压缩文件</p>
+<p>-x 解压</p>
+<p>-t 查看内容</p>
+<p>-v 显示所有过程</p>
+<p>-z 用gzip压缩解压</p>
+<p>-j 用bzip2压缩解压</p>
+<p>-f 使用文件名（必须有的参数且是最后一个参数）</p>
+<p>解压：</p>
+<p>*.tar<br> tar -xvf</p>
+<p>*.tar.gz      tar -xzf</p>
+<p>*tar.bz2<br>tar -xjf   </p>
+<h2 id="20、vi：编辑器"><a href="#20、vi：编辑器" class="headerlink" title="20、vi：编辑器"></a>20、vi：编辑器</h2><p>一般模式：</p>
+<p>i 切换到编辑模式</p>
+<p>：切换到底线命令模式</p>
+<p>Page Down&#x2F;Page Up 向上&#x2F;向下移动一页</p>
+<p>Home&#x2F;End 移动到这行的最前面&#x2F;最后面</p>
+<p>G 移动到这个文档的最后一行</p>
+<p>gg 移动到这个文档的第一行</p>
+<p>数字+Enter  光标向下移动n行</p>
+<p>&#x2F;word 在文档内搜索word字符串</p>
+<p>dd  删除光标所在那一整行</p>
+<p>yy  复制光标所在的那一行</p>
+<p>u 复原前一个动作</p>
+<p>ctrl + r 重做一次上一个动作</p>
+<h2 id="21、shell脚本内if判断条件"><a href="#21、shell脚本内if判断条件" class="headerlink" title="21、shell脚本内if判断条件"></a>21、shell脚本内if判断条件</h2><p>字符串比较：str1 &#x3D; str2   str1 !&#x3D; str2</p>
+<p>数字比较： -eq 相等      -ne不相等    -gt 大于  </p>
+<p>-ge大于等于   -lt 小于      -le小于等于</p>
+<p>目录文件：-d 该目录存在  -f  该文件存在</p>
+<p>逻辑判断：-a 与      -o 或      ！非</p>
+<p>或者使用&amp;&amp; ||逻辑符，但是逻辑符写在中括号之间</p>
+<h2 id="22、命令行快捷键"><a href="#22、命令行快捷键" class="headerlink" title="22、命令行快捷键"></a>22、命令行快捷键</h2><p>ctrl + u 删除光标前的所有字符</p>
+<p>ctrl + k<br>删除光标后的所有字符</p>
+<p>ctrl + a 移动光标到行首</p>
+<p>ctrl + e 移动光标到行尾</p>
+<p>ctrl + insert 复制</p>
+<p>shift + insert 粘贴</p>
+<h2 id="23-touch-命令"><a href="#23-touch-命令" class="headerlink" title="23. touch 命令"></a>23. touch 命令</h2><p>touch 命令参数可更改文档或目录的日期时间，包括存取时间和更改时间。</p>
+<p>touch test.txt 创建不存在的文件test.txt</p>
+<h2 id="23-vi-命令"><a href="#23-vi-命令" class="headerlink" title="23. vi 命令"></a>23. vi 命令</h2><p>vi是工作在字符终端环境下的全屏幕编辑器</p>
+<ul>
+<li>命令模式<ul>
+<li>i 切换到输入模式，以输入字符。</li>
+<li>x 删除当前光标所在处的字符。</li>
+<li>: 切换到底线命令模式，以在最底一行输入命令。</li>
+</ul>
+</li>
+<li>输入模式<ul>
+<li>字符按键以及Shift组合，输入字符</li>
+<li>ENTER，回车键，换行</li>
+<li>BACK SPACE，退格键，删除光标前一个字符</li>
+<li>DEL，删除键，删除光标后一个字符</li>
+<li>方向键，在文本中移动光标</li>
+<li>HOME&#x2F;END，移动光标到行首&#x2F;行尾</li>
+<li>Page Up&#x2F;Page Down，上&#x2F;下翻页</li>
+<li>Insert，切换光标为输入&#x2F;替换模式，光标将变成竖线&#x2F;下划线</li>
+<li>ESC，退出输入模式，切换到命令模式</li>
+</ul>
+</li>
+<li>末行模式<ul>
+<li>q 退出程序</li>
+<li>q! 不保存并退出</li>
+<li>wq 保存文件并退出</li>
+</ul>
+</li>
+</ul>
+<h2 id="24-ssh-key"><a href="#24-ssh-key" class="headerlink" title="24. ssh-key"></a>24. ssh-key</h2><p>生成ssh密钥</p>
+<figure class="highlight excel"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs excel">ssh-keygen -<span class="hljs-built_in">t</span> rsa -C <span class="hljs-string">&quot;你的邮箱&quot;</span><br></code></pre></td></tr></table></figure>
+
+              
+            </div>
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>常用shell命令</div>
+      <div>http://example.com/2022/05/02/shellCommand/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Cosima</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年5月2日</div>
+        </div>
+      
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+          
+        </div>
+      </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/05/19/gitCommand/" title="Git 常见用法(包含🌰)">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Git 常见用法(包含🌰)</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/04/03/markdown/" title="Markdown 基本语法">
+                        <span class="hidden-mobile">Markdown 基本语法</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <i class="iconfont icon-love"></i> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.0/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script>
+  (function() {
+    var enableLang = CONFIG.code_language.enable && CONFIG.code_language.default;
+    var enableCopy = CONFIG.copy_btn;
+    if (!enableLang && !enableCopy) {
+      return;
+    }
+
+    function getBgClass(ele) {
+      return Fluid.utils.getBackgroundLightness(ele) >= 0 ? 'code-widget-light' : 'code-widget-dark';
+    }
+
+    var copyTmpl = '';
+    copyTmpl += '<div class="code-widget">';
+    copyTmpl += 'LANG';
+    copyTmpl += '</div>';
+    jQuery('.markdown-body pre').each(function() {
+      var $pre = jQuery(this);
+      if ($pre.find('code.mermaid').length > 0) {
+        return;
+      }
+      if ($pre.find('span.line').length > 0) {
+        return;
+      }
+
+      var lang = '';
+
+      if (enableLang) {
+        lang = CONFIG.code_language.default;
+        if ($pre[0].children.length > 0 && $pre[0].children[0].classList.length >= 2 && $pre.children().hasClass('hljs')) {
+          lang = $pre[0].children[0].classList[1];
+        } else if ($pre[0].getAttribute('data-language')) {
+          lang = $pre[0].getAttribute('data-language');
+        } else if ($pre.parent().hasClass('sourceCode') && $pre[0].children.length > 0 && $pre[0].children[0].classList.length >= 2) {
+          lang = $pre[0].children[0].classList[1];
+          $pre.parent().addClass('code-wrapper');
+        } else if ($pre.parent().hasClass('markdown-body') && $pre[0].classList.length === 0) {
+          $pre.wrap('<div class="code-wrapper"></div>');
+        }
+        lang = lang.toUpperCase().replace('NONE', CONFIG.code_language.default);
+      }
+      $pre.append(copyTmpl.replace('LANG', lang).replace('code-widget">',
+        getBgClass($pre[0]) + (enableCopy ? ' code-widget copy-btn" data-clipboard-snippet><i class="iconfont icon-copy"></i>' : ' code-widget">')));
+
+      if (enableCopy) {
+        Fluid.utils.createScript('https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js', function() {
+          var clipboard = new window.ClipboardJS('.copy-btn', {
+            target: function(trigger) {
+              var nodes = trigger.parentNode.childNodes;
+              for (var i = 0; i < nodes.length; i++) {
+                if (nodes[i].tagName === 'CODE') {
+                  return nodes[i];
+                }
+              }
+            }
+          });
+          clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.innerHTML = e.trigger.innerHTML.replace('icon-copy', 'icon-success');
+            setTimeout(function() {
+              e.trigger.innerHTML = e.trigger.innerHTML.replace('icon-success', 'icon-copy');
+            }, 2000);
+          });
+        });
+      }
+    });
+  })();
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
