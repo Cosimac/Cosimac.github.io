@@ -553,24 +553,11 @@ $ git branch -u o/main foo
 # 这样 foo 就会跟踪 o/main 了。如果当前就在 foo 分支上, 还可以省略 foo：
 $ git branch -u o/main
 ```
-### fetch的参数
-我们刚学习了 git push 的参数，很酷的 <place> 参数，还有用冒号分隔的 refspecs（<source>:<destination>）。 这些参数可以用于 git fetch 吗？
-你猜中了！git fetch 的参数和 git push 极其相似。他们的概念是相同的，只是方向相反罢了（因为现在你是下载，而非上传）
-<place> 参数
-如果你像如下命令这样为 git fetch 设置 的话：
-git fetch origin foo
-Git 会到远程仓库的 foo 分支上，然后获取所有本地不存在的提交，放到本地的 o/foo 上。
-通过指定 place...
-$ git fetch origin foo
-我们只下载了远程仓库中 foo 分支中的最新提交记录，并更新了 o/foo
-
-“如果我们指定 <source>:<destination> 会发生什么呢？”
-如果你觉得直接更新本地分支很爽，那你就用冒号分隔的 refspec 吧。不过，你不能在当前检出的分支上干这个事，但是其它分支是可以的。
-这里有一点是需要注意的 —— source 现在指的是远程仓库中的位置，而 <destination> 才是要放置提交的本地仓库的位置。它与 git push 刚好相反，这是可以讲的通的，因为我们在往相反的方向传送数据。
-理论上虽然行的通，但开发人员很少这么做。我在这里介绍它主要是为了从概念上说明 fetch 和 push 的相似性，只是方向相反罢了。
-
-ps1:
-$ git fetch origin foo~1:bar
-哇! 看见了吧, Git 将 foo~1 解析成一个 origin 仓库的位置，然后将那些提交记录下载到了本地的 bar 分支（一个本地分支）上。注意由于我们指定了目标分支，foo 和 o/foo 都没有被更新。
-
-如果 git fetch 没有参数，它会下载所有的提交记录到各个远程分支……
+### 代码分支迁移到不同仓库
+当我们需要将分支origin(A)/a 迁移到 origin(B)/a 并保留分支记录
+```
+切换到当前origin(A) 更换当前仓库为目标仓库
+$ git remote set-url origin https://gitlab.southinfo.net/ecrp-sg-web.git
+推送当前分支到更换后的目标仓库(需要密码/ssh认证)
+$ git push
+```
