@@ -266,7 +266,7 @@ $ git commit --amend
 git fetch 实际上将本地仓库中的远程分支更新成了远程仓库相应分支最新的状态。
 git fetch 完成了仅有的但是很重要的两步:
 + 从远程仓库下载本地仓库中缺失的提交记录
-+ 更新远程分支指针(如 o/main)
++ 更新远程分支指针(如 origin/main)
 
 git fetch 不会做的事: 
 + git fetch 并不会改变你本地仓库的状态。它不会更新你的 main 分支，也不会修改你磁盘上的文件。
@@ -277,9 +277,11 @@ git fetch 不会做的事:
 ```
 # 将远程仓库所有分支的最新版本全部取回到本地
 $ git fetch <远程仓库的别名>
+$ git fetch origin
 
 # 将远程仓库指定分支的最新版本取回到本地
 $ git fetch <远程主机名> <分支名>
+$ git fetch origin pre:pre
 ```
 ### git merge
 合并分支
