@@ -1,0 +1,758 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon/favicon.png">
+  <link rel="icon" href="/img/favicon/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Cosima">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="服务端向web前端推送消息常用方式问题出现场景 面试官向你提问，说说如何实现服务端向web前端推送数据？😂 实际开发中当前端页面在挂起状态，这时候服务端推送了一条消息需要前端展示（单向推送） web页面实时聊天功能（双向推送）  解决方案主要写了5种方案，分别介绍下实现以及运用场景   轮询（短轮询）这是最简单直观的方法，就是每隔一段时间发起一个请求到后端询问是否有新信息。至于为什么又叫短轮询，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="服务端消息推送方式">
+<meta property="og:url" content="http://example.com/2022/08/14/webServerPush/index.html">
+<meta property="og:site_name" content="Cosima">
+<meta property="og:description" content="服务端向web前端推送消息常用方式问题出现场景 面试官向你提问，说说如何实现服务端向web前端推送数据？😂 实际开发中当前端页面在挂起状态，这时候服务端推送了一条消息需要前端展示（单向推送） web页面实时聊天功能（双向推送）  解决方案主要写了5种方案，分别介绍下实现以及运用场景   轮询（短轮询）这是最简单直观的方法，就是每隔一段时间发起一个请求到后端询问是否有新信息。至于为什么又叫短轮询，">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-14T06:17:54.000Z">
+<meta property="article:modified_time" content="2022-09-27T02:17:49.320Z">
+<meta property="article:author" content="Cosima">
+<meta property="article:tag" content="web">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>服务端消息推送方式 - Cosima</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.0","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Cosima</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg/bg.webp') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="服务端消息推送方式"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-08-14 14:17" pubdate>
+          2022年8月14日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          4.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          37 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">服务端消息推送方式</h1>
+            
+            <div class="markdown-body">
+              
+              <h2 id="服务端向web前端推送消息常用方式"><a href="#服务端向web前端推送消息常用方式" class="headerlink" title="服务端向web前端推送消息常用方式"></a>服务端向web前端推送消息常用方式</h2><h3 id="问题出现场景"><a href="#问题出现场景" class="headerlink" title="问题出现场景"></a>问题出现场景</h3><ul>
+<li>面试官向你提问，说说如何实现服务端向web前端推送数据？😂</li>
+<li>实际开发中当前端页面在挂起状态，这时候服务端推送了一条消息需要前端展示（单向推送）</li>
+<li>web页面实时聊天功能（双向推送）</li>
+</ul>
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><p>主要写了5种方案，分别介绍下实现以及运用场景</p>
+<blockquote>
+<ol>
+<li>轮询（短轮询）<br>这是最简单直观的方法，就是每隔一段时间发起一个请求到后端询问是否有新信息。至于为什么又叫短轮询，其是相对于后续要说的长轮询来对比的。</li>
+</ol>
+</blockquote>
+<p>前端写法只要设置一个setTimeout来定时请求就行</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// 缓存前端已经获取的最新id</span><br><span class="hljs-keyword">let</span> id = <span class="hljs-number">0</span>;<br><span class="hljs-keyword">function</span> <span class="hljs-title function_">poll</span>(<span class="hljs-params"></span>) &#123;<br>  $.<span class="hljs-title function_">ajax</span>(&#123;<br>    <span class="hljs-attr">url</span>: <span class="hljs-string">&#x27;/api/polling&#x27;</span>,<br>    <span class="hljs-attr">data</span>: &#123; id &#125;,<br>  &#125;).<span class="hljs-title function_">done</span>(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> &#123;<br>    id += res.<span class="hljs-property">length</span>;<br>  &#125;).<span class="hljs-title function_">always</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>    <span class="hljs-comment">// 10s后再次请求</span><br>    <span class="hljs-built_in">setTimeout</span>(poll, <span class="hljs-number">10000</span>);<br>  &#125;);<br>&#125;<br><span class="hljs-title function_">poll</span>();<br></code></pre></td></tr></table></figure>
+<p>后端写法，根据前端给到的id，看看有没有新消息，有就返回，没有就返回空</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> id = <span class="hljs-built_in">parseInt</span>(query.<span class="hljs-property">id</span> || <span class="hljs-string">&#x27;0&#x27;</span>, <span class="hljs-number">10</span>) || <span class="hljs-number">0</span>;<br>res.<span class="hljs-title function_">writeHead</span>(<span class="hljs-number">200</span>, &#123; <span class="hljs-string">&#x27;Content-Type&#x27;</span>: <span class="hljs-string">&#x27;application/json;&#x27;</span> &#125;);<br>res.<span class="hljs-title function_">end</span>(<span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(datas.<span class="hljs-title function_">slice</span>(id)));<br></code></pre></td></tr></table></figure>
+<p>这种方式不需要后端实现消息推送改造，只需要前端定时请求后端接口其实时性与请求频率成正相关，但是当请求频率上来了，性能浪费也就越高，毕竟可能大部分请求都是无意义的。</p>
+<blockquote>
+<ol start="2">
+<li>长轮询<br>这里的长轮询相对前面的轮询来说，算是一种优化。具体就是前端发起请求到后端，后端不直接返回，而是等待有新信息时再返回。所以这样发起的一个请求，可能需要很长的时间才能等到返回，故而叫做长轮询。</li>
+</ol>
+</blockquote>
+<p>其前端代码基本和短轮询一致，只不过把请求的超时时间设置较长（比如1分钟），然后无论请求成功或失败，马上再次发起请求即可。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">let</span> id = <span class="hljs-number">0</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">poll</span>(<span class="hljs-params"></span>) &#123;<br>  $.<span class="hljs-title function_">ajax</span>(&#123;<br>    <span class="hljs-attr">url</span>: <span class="hljs-string">&#x27;/api/long-polling&#x27;</span>,<br>    <span class="hljs-attr">data</span>: &#123; id &#125;,<br>    <span class="hljs-attr">timeout</span>: <span class="hljs-number">60000</span>, <span class="hljs-comment">// 请求的超时时间设置较长</span><br>  &#125;).<span class="hljs-title function_">done</span>(<span class="hljs-function">(<span class="hljs-params">res</span>) =&gt;</span> &#123;<br>    id += res.<span class="hljs-property">length</span><br>  &#125;).<span class="hljs-title function_">always</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>    <span class="hljs-built_in">setTimeout</span>(poll, <span class="hljs-number">1000</span>)<br>  &#125;)<br>&#125;<br><span class="hljs-title function_">poll</span>()<br></code></pre></td></tr></table></figure>
+<p>后端写法</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> id = <span class="hljs-built_in">parseInt</span>(query.<span class="hljs-property">id</span> || <span class="hljs-string">&#x27;0&#x27;</span>, <span class="hljs-number">10</span>) || <span class="hljs-number">0</span>;<br><span class="hljs-keyword">const</span> cbk = <span class="hljs-string">&#x27;long-polling&#x27;</span>;<br><span class="hljs-keyword">delete</span> callbacks[cbk];<br><span class="hljs-keyword">const</span> data = datas.<span class="hljs-title function_">slice</span>(id);<br>res.<span class="hljs-title function_">writeHead</span>(<span class="hljs-number">200</span>, &#123; <span class="hljs-string">&#x27;Content-Type&#x27;</span>: <span class="hljs-string">&#x27;application/json&#x27;</span> &#125;);<br><span class="hljs-comment">// 发起请求时，正好有新消息就返回</span><br><span class="hljs-keyword">if</span> (data.<span class="hljs-property">length</span>) &#123;<br> <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">end</span>(<span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(data));<br>&#125;<br><span class="hljs-comment">// 注册新消息回调</span><br>callbacks[cbk] = <span class="hljs-function">(<span class="hljs-params">d</span>) =&gt;</span> &#123;<br> res.<span class="hljs-title function_">end</span>(d);<br>&#125;;<br></code></pre></td></tr></table></figure>
+<p>这样，相对于短轮询，少了很多无意义的请求，而且消息的实时性也非常好。缺点就是当服务端有异常时，会导致长轮询短时间内不断发起请求，可能让服务端承受更大的压力，所以两次长轮询之间最好有一定间隔，或者异常检测机制。</p>
+<blockquote>
+<ol start="3">
+<li>SSE（Server-sent events）<br>前面提到的轮询、长轮询都是一问一答式的，一次请求，无法推送多次消息到前端。而SSE就厉害了，一次请求，N次推送。<br>其原理可以理解为下载一个巨大的文件，文件的内容分块传给前端，每块就是一次消息推送。</li>
+</ol>
+</blockquote>
+<p>前端写法，有专门的EventSource来接收，使用起来很方便</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">let</span> id = <span class="hljs-number">0</span><br><span class="hljs-keyword">const</span> es = <span class="hljs-keyword">new</span> <span class="hljs-title class_">EventSource</span>(<span class="hljs-string">&#x27;/api/sse&#x27;</span>)<br>es.<span class="hljs-property">onmessage</span> = <span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> &#123;<br>  <span class="hljs-keyword">try</span> &#123;<br>    <span class="hljs-keyword">const</span> res = <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(e.<span class="hljs-property">data</span>)<br>  &#125; <span class="hljs-keyword">catch</span> (e) &#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(e)<br>  &#125;<br>&#125;<br>es.<span class="hljs-property">onopen</span> = <span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-title function_">pushStatus</span>(s, <span class="hljs-string">&#x27;等待消息中&#x27;</span>, <span class="hljs-string">&#x27;success&#x27;</span>)<br>&#125;<br>es.<span class="hljs-property">onerror</span> = <span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-title function_">pushStatus</span>(s, <span class="hljs-string">&#x27;连接错误&#x27;</span>, <span class="hljs-string">&#x27;danger&#x27;</span>)<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>后端写法，核心在于Content-Type: text&#x2F;event-stream，这要让前端知道这是SSE，还有就是传输信息的格式比较特别一点，详细的可以看 MDN（ <a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events">https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events</a> ）</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs javascript">res.<span class="hljs-title function_">writeHead</span>(<span class="hljs-number">200</span>, &#123;<br>  <span class="hljs-comment">// 这个是核心</span><br>  <span class="hljs-string">&#x27;Content-Type&#x27;</span>: <span class="hljs-string">&#x27;text/event-stream&#x27;</span>,<br>  <span class="hljs-string">&#x27;Connection&#x27;</span>: <span class="hljs-string">&#x27;keep-alive&#x27;</span>,<br>&#125;);<br><span class="hljs-comment">// 把缓存的信息推送给前端</span><br>res.<span class="hljs-title function_">write</span>(<span class="hljs-string">`data: <span class="hljs-subst">$&#123;<span class="hljs-built_in">JSON</span>.stringify(datas)&#125;</span>\n\n`</span>);<br><span class="hljs-comment">// 注册新消息回调</span><br>callbacks[cbk] = <span class="hljs-function">(<span class="hljs-params">d</span>) =&gt;</span> &#123;<br>  res.<span class="hljs-title function_">write</span>(<span class="hljs-string">`data: <span class="hljs-subst">$&#123;d&#125;</span>\n\n`</span>);<br>&#125;;<br></code></pre></td></tr></table></figure>
+<p>SSE还支持自动重连！服务器短时间异常，恢复之后，无需额外代码，SSE就自动重连上了。</p>
+<blockquote>
+<ol start="4">
+<li>WebSocket<br>WebSocket可以一次连接，双向推送，而SSE只能从服务端推送到前端。从这个角度来看，用WebSocket来单做服务端推送，有点大材小用了。</li>
+</ol>
+</blockquote>
+<p>前端写法与SSE类似，十分简单，只不过请求链接为ws:&#x2F;&#x2F;或者wss:&#x2F;&#x2F;开头（相当于http:&#x2F;&#x2F;和https:&#x2F;&#x2F;）</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> ws = <span class="hljs-keyword">new</span> <span class="hljs-title class_">WebSocket</span>(<span class="hljs-string">&#x27;ws://localhost:3000/ws&#x27;</span>);<br>ws.<span class="hljs-property">onmessage</span> = <span class="hljs-function"><span class="hljs-params">e</span> =&gt;</span> &#123;<br>  <span class="hljs-keyword">try</span> &#123;<br>    <span class="hljs-keyword">const</span> c = <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(e.<span class="hljs-property">data</span>);<br>  &#125; <span class="hljs-keyword">catch</span> (err) &#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(err);<br>  &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+<p>如果要用原生Node.js来写WebSocket服务，就会麻烦一些了，一般情况都会使用类似socket.io之类的三方库来降低实现成本。这边也就在网上摘抄了一段代码来简单实现一下<br>后端写法</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs javascript">server.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;upgrade&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">req, socket</span>) =&gt;</span> &#123;<br>  <span class="hljs-keyword">const</span> acceptKey = req.<span class="hljs-property">headers</span>[<span class="hljs-string">&#x27;sec-websocket-key&#x27;</span>];<br>  <span class="hljs-keyword">const</span> hash = <span class="hljs-title function_">generateAcceptValue</span>(acceptKey);<br>  <span class="hljs-comment">// 生成响应头信息</span><br>  <span class="hljs-keyword">const</span> responseHeaders = [ <span class="hljs-string">&#x27;HTTP/1.1 101 Web Socket Protocol Handshake&#x27;</span>, <span class="hljs-string">&#x27;Upgrade: WebSocket&#x27;</span>, <span class="hljs-string">&#x27;Connection: Upgrade&#x27;</span>, <span class="hljs-string">`Sec-WebSocket-Accept: <span class="hljs-subst">$&#123;hash&#125;</span>`</span> ];<br>  <span class="hljs-comment">// 告知前端这是WebSocket协议</span><br>  socket.<span class="hljs-title function_">write</span>(responseHeaders.<span class="hljs-title function_">join</span>(<span class="hljs-string">&#x27;\r\n&#x27;</span>) + <span class="hljs-string">&#x27;\r\n\r\n&#x27;</span>);<br>  <span class="hljs-comment">// 发送数据</span><br>  socket.<span class="hljs-title function_">write</span>(<span class="hljs-title function_">constructReply</span>(datas));<br>  callbacks[cbk] = <span class="hljs-function">(<span class="hljs-params">d</span>) =&gt;</span> &#123;<br>    socket.<span class="hljs-title function_">write</span>(<span class="hljs-title function_">constructReply</span>(d));<br>  &#125;<br>&#125;);<br></code></pre></td></tr></table></figure>
+<p>Websocket没有像SSE一样有自动重连，这块需要自行实现。一般网页实时聊天之类需要双向推送的，都会使用WebSocket来实现。</p>
+<blockquote>
+<ol start="5">
+<li>iFrame<br>原理类似使用iFrame加载一个巨大的网页，利用浏览器会一边加载一边解析执行返回的HTML，通过分次返回Script标签来实现消息推送。其实现类似SSE</li>
+</ol>
+</blockquote>
+<p>前端代码很简单，要注册一个回调给iframe使用</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// 注册给iframe使用的方法</span><br><span class="hljs-variable language_">window</span>.<span class="hljs-property">change</span> = <span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) &#123;&#125;;<br>$(<span class="hljs-string">&#x27;body&#x27;</span>).<span class="hljs-title function_">append</span>(<span class="hljs-string">&#x27;&lt;iframe src=&quot;/api/iframe&quot;&gt;&lt;/iframe&gt;&#x27;</span>);<br></code></pre></td></tr></table></figure>
+<p>后端也很简单，有消息的时候返回script标签即可</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// 有推送消息返回缓存信息</span><br>res.<span class="hljs-title function_">write</span>(<span class="hljs-string">`&lt;script&gt;window.parent.change(<span class="hljs-subst">$&#123;<span class="hljs-built_in">JSON</span>.stringify(datas)&#125;</span>);&lt;/script&gt;`</span>);<br><span class="hljs-comment">// 注册消息回调</span><br>callbacks[cbk] = <span class="hljs-function">(<span class="hljs-params">d</span>) =&gt;</span> &#123;<br>  res.<span class="hljs-title function_">write</span>(<span class="hljs-string">`&lt;script&gt;window.parent.change(<span class="hljs-subst">$&#123;d&#125;</span>);&lt;/script&gt;`</span>);<br>&#125;;<br></code></pre></td></tr></table></figure>
+<p>iFrame这种方式缺点没有判断加载异常的情况</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><table>
+<thead>
+<tr>
+<th>方案</th>
+<th align="center">实时性</th>
+<th align="center">单次连接</th>
+<th align="center">自动重连</th>
+<th align="center">断线检测</th>
+<th align="center">双向推送</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>短轮询</td>
+<td align="center">❌</td>
+<td align="center">❌</td>
+<td align="center">➖</td>
+<td align="center">✅</td>
+<td align="center">❌</td>
+</tr>
+<tr>
+<td>长轮询</td>
+<td align="center">✅</td>
+<td align="center">❌</td>
+<td align="center">➖</td>
+<td align="center">✅</td>
+<td align="center">❌</td>
+</tr>
+<tr>
+<td>SSE</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">❌</td>
+</tr>
+<tr>
+<td>WebSocket</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">❌</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+</tr>
+<tr>
+<td>iFrame</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">❌</td>
+<td align="center">❌</td>
+<td align="center">❌</td>
+</tr>
+</tbody></table>
+
+              
+            </div>
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/web/">#web</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>服务端消息推送方式</div>
+      <div>http://example.com/2022/08/14/webServerPush/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Cosima</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年8月14日</div>
+        </div>
+      
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+          
+        </div>
+      </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/05/19/gitCommand/" title="Git 常见用法(包含🌰)">
+                        <span class="hidden-mobile">Git 常见用法(包含🌰)</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <i class="iconfont icon-love"></i> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.0/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script>
+  (function() {
+    var enableLang = CONFIG.code_language.enable && CONFIG.code_language.default;
+    var enableCopy = CONFIG.copy_btn;
+    if (!enableLang && !enableCopy) {
+      return;
+    }
+
+    function getBgClass(ele) {
+      return Fluid.utils.getBackgroundLightness(ele) >= 0 ? 'code-widget-light' : 'code-widget-dark';
+    }
+
+    var copyTmpl = '';
+    copyTmpl += '<div class="code-widget">';
+    copyTmpl += 'LANG';
+    copyTmpl += '</div>';
+    jQuery('.markdown-body pre').each(function() {
+      var $pre = jQuery(this);
+      if ($pre.find('code.mermaid').length > 0) {
+        return;
+      }
+      if ($pre.find('span.line').length > 0) {
+        return;
+      }
+
+      var lang = '';
+
+      if (enableLang) {
+        lang = CONFIG.code_language.default;
+        if ($pre[0].children.length > 0 && $pre[0].children[0].classList.length >= 2 && $pre.children().hasClass('hljs')) {
+          lang = $pre[0].children[0].classList[1];
+        } else if ($pre[0].getAttribute('data-language')) {
+          lang = $pre[0].getAttribute('data-language');
+        } else if ($pre.parent().hasClass('sourceCode') && $pre[0].children.length > 0 && $pre[0].children[0].classList.length >= 2) {
+          lang = $pre[0].children[0].classList[1];
+          $pre.parent().addClass('code-wrapper');
+        } else if ($pre.parent().hasClass('markdown-body') && $pre[0].classList.length === 0) {
+          $pre.wrap('<div class="code-wrapper"></div>');
+        }
+        lang = lang.toUpperCase().replace('NONE', CONFIG.code_language.default);
+      }
+      $pre.append(copyTmpl.replace('LANG', lang).replace('code-widget">',
+        getBgClass($pre[0]) + (enableCopy ? ' code-widget copy-btn" data-clipboard-snippet><i class="iconfont icon-copy"></i>' : ' code-widget">')));
+
+      if (enableCopy) {
+        Fluid.utils.createScript('https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js', function() {
+          var clipboard = new window.ClipboardJS('.copy-btn', {
+            target: function(trigger) {
+              var nodes = trigger.parentNode.childNodes;
+              for (var i = 0; i < nodes.length; i++) {
+                if (nodes[i].tagName === 'CODE') {
+                  return nodes[i];
+                }
+              }
+            }
+          });
+          clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.innerHTML = e.trigger.innerHTML.replace('icon-copy', 'icon-success');
+            setTimeout(function() {
+              e.trigger.innerHTML = e.trigger.innerHTML.replace('icon-success', 'icon-copy');
+            }, 2000);
+          });
+        });
+      }
+    });
+  })();
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
