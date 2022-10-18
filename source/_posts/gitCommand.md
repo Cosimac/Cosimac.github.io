@@ -381,16 +381,20 @@ $ git log -<指定的数量>
 $ git reset [<文件路径>]
 $ git reset --mixed [<文件路径>]
 
-# 将 HEAD 的指向改变，撤销到指定的提交记录，文件未修改
+# --mixed 重置索引，但不重置工作树，更改后的文件标记为未提交（add）的状态。默认操作 （git status 是红色的状态）。
 $ git reset <commit ID>
 $ git reset --mixed <commit ID>
 
-# 将 HEAD 的指向改变，撤销到指定的提交记录，文件未修改
+# --soft 回退后a分支修改的代码被保留并标记为add的状态（git status 是绿色的状态）
 # 相当于调用 "git reset --mixed" 命令后又做了一次 "git add"
 $ git reset --soft <commit ID>
 
-# 将 HEAD 的指向改变，撤销到指定的提交记录，文件也修改了
+# --hard 重置索引和工作树，并且a分支修改的所有文件和中间的提交，没提交的代码都被丢弃了。
 $ git reset --hard <commit ID>
+
+# --merge 和--hard类似，只不过如果在执行reset命令之前你有改动一些文件并且未提交，merge会保留你的这些修改，hard则不会。【注：如果你的这些修改add过或commit过，merge和hard都将删除你的提交】
+# --keep 和--hard类似，执行reset之前改动文件如果是a分支修改了的，会提示你修改了相同的文件，不能合并。如果不是a分支修改的文件，会移除缓存区。git status还是可以看到保持了这些修改。
+
 ```
 ### git revert
 生成一个新的提交来撤销某次提交，此次提交之前的所有提交都会被保留。
@@ -563,3 +567,64 @@ $ git remote set-url origin https://gitlab.southinfo.net/ecrp-sg-web.git
 推送当前分支到更换后的目标仓库(需要密码/ssh认证)
 $ git push
 ```
+
+### 代码回滚(reset/revert)
++ 结论
+1. git revert 后会多出一条commit，这里可进行回撤操作
+2. git reset 直接把之前 commit 删掉，非 git reset --hard 的操作是不会删掉修改代码，如果远程已经有之前代码，需要强推 git push -f
+
++ 应用场景
+1. 如果回退分支的代码以后还需要的话用git revert就再好不过了；
+2. 如果分支我就是提错了没用了还不想让别人发现我错的代码，那就git reset吧
+
++ git reset
+develop将a分支合并后，想要不留痕迹的撤回合并。这个时候用git reset就是很好的选择了
+```
+develop ----1      3-----
+             \   /
+branch a       a
+```
+
++ 操作步骤
+1. 切换分支到develop
+2. git log 查看当前分支日志
+3. 我要将develop回退到合并之前的状态，那就是退到 commit 1这了，将commit号复制下来。退出编辑界面。
+```
+3.1 a分支的代码我不需要了，以后应该也不需要了
+  git reset 1（粘贴过来的commit号） --hard
+3.2 a分支的代码我还需要
+  git reset 1（粘贴过来的commit号）
+```
+4. 将回退后的代码推送到远端 git push origin develop
+```
+![rejected] develop -> develop (non-fast-forward)
+error: 无法推送一些引用到 'git@github.cn:...'
+提示：更新被拒绝，因为您当前分支的最新提交落后于其对应的远程分支。
+。。。
+```
+因为本地分支的代码落后于远端develop分支, 所以这一步需要强行推送 *--force*
+5. 强推
+```
+git push origin develop --force
+```
+
++ git revert
+还是之前的需求，不想要合并a，只想要没合并a时的样子。
+``` 
+develop ----1      3-----
+             \   /
+branch a       a
+```
+
++ 操作步骤
+1. 切换分支到develop  git checkout develop
+2. git log 查看当前分支日志
+3. 这次和git reset 不同的是我不能复制 commit 1这个commit号了，我需要复制的是commit 2的commit号。因为revert后面跟的是具体需要哪个已经合并了的分支，而并不是需要会退到哪的commit号。
+```
+git revert 2
+```
+4. push到远端服务器
+```
+git push origin develop
+```
+
