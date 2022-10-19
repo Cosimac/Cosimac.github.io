@@ -493,6 +493,48 @@ git describe <ref>
 # C0(v1) -> C1 -> C2(main)
 git describe main 会输出：v1_2_gC2 
 ```
+
+### git worktree
+仅需维护一个 repo，又可以同时在多个 branch 上工作，互不影响
+默认情况下， git init 或 git clone 初始化的 repo，只有一个 worktree，叫做 main worktree
+在某一个目录下使用 Git 命令，当前目录下要么有 .git 文件夹；要么有 .git 文件，如果只有 .git 文件，里面的内容必须是指向 .git 文件夹的
+
+```
+# 常用worktree 命令
+$ git worktree add [-f] [--detach] [--checkout] [--lock] [-b <new-branch>] <path> [<commit-ish>]
+$ git worktree list [--porcelain]
+$ git worktree remove [-f] <worktree>
+$ git worktree prune [-n] [-v] [--expire <expire>]
+```
++ 创建一个worktree
+```
+git worktree add ../feature/feature2
+```
+目录结构
+```
+├── amend-crash-demo
+└── feature
+    └── feature2
+```
+cd ../feature/feature2/ 会发现，这个分支下并不存在 .git 文件夹，却存在一个 .git 文件，打开文件，内容如下：
+```
+gitdir: /Users/rgyb/Documents/projects/amend-crash-demo/.git/worktrees/feature2
+```
++ git worktree remove
+```
+# 删除一个worktree 参数是文件路径 注意路径前不加 "/"
+git worktree remove feature/feature2
+```
+```
+# 假设你创建一个 worktree，并在里面有改动，突然间这个worktree 又不需要了，此刻你按照上述命令是不能删掉了，此时就需要 -f 参数来帮忙了
+git worktree remove -f feature/feature2
+```
+```
+# 删除了 worktree，其实在 Git 的文件中，还有很多 administrative 文件是没有用的，为了保持清洁，我们还需要进一步清理
+# 这个命令就是清洁的兜底操作，可以让我们的工作始终保持整洁
+git worktree prune
+```
+
 ## Git操作场景(🌰)
 ### 删除掉本地不存在的远程分支
 多人合作开发时，如果远程的分支被其他开发删除掉，在本地执行 git branch --all 依然会显示该远程分支，可使用下列的命令进行删除
