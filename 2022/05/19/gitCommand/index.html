@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://www.ruanyifeng.com/blogimg/asset/2015/bg2015120901.png">
 <meta property="article:published_time" content="2022-05-19T15:40:55.000Z">
-<meta property="article:modified_time" content="2022-07-08T02:34:22.520Z">
+<meta property="article:modified_time" content="2022-10-19T07:38:06.616Z">
 <meta property="article:author" content="Cosima">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://www.ruanyifeng.com/blogimg/asset/2015/bg2015120901.png">
@@ -219,7 +219,7 @@
         <i class="iconfont icon-chart"></i>
         
           <!-- compatible with older versions-->
-          11k 字
+          14k 字
         
       </span>
     
@@ -231,7 +231,7 @@
         
         
           <!-- compatible with older versions-->
-          93 分钟
+          115 分钟
         
       </span>
     
@@ -336,7 +336,7 @@
 <h3 id="git-log"><a href="#git-log" class="headerlink" title="git log"></a>git log</h3><p>显示提交的记录。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">打印所有的提交记录</span><br><span class="hljs-meta prompt_">$ </span><span class="language-bash">git <span class="hljs-built_in">log</span></span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">打印从第一次提交到指定的提交的记录</span><br><span class="hljs-meta prompt_">$ </span><span class="language-bash">git <span class="hljs-built_in">log</span> &lt;commit ID&gt;</span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">打印指定数量的最新提交的记录</span><br><span class="hljs-meta prompt_">$ </span><span class="language-bash">git <span class="hljs-built_in">log</span> -&lt;指定的数量&gt;</span><br></code></pre></td></tr></table></figure>
 <h3 id="git-reset"><a href="#git-reset" class="headerlink" title="git reset"></a>git reset</h3><p>还原提交记录。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">重置暂存区，但文件不受影响</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">相当于将用 <span class="hljs-string">&quot;git add&quot;</span> 命令更新到暂存区的内容撤出暂存区，可以指定文件</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">没有指定 commit ID 则默认为当前 HEAD</span><br><span class="hljs-meta prompt_">$ </span><span class="language-bash">git reset [&lt;文件路径&gt;]</span><br><span class="hljs-meta prompt_">$ </span><span class="language-bash">git reset --mixed [&lt;文件路径&gt;]</span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">将 HEAD 的指向改变，撤销到指定的提交记录，文件未修改</span><br><span class="hljs-meta prompt_">$ </span><span class="language-bash">git reset &lt;commit ID&gt;</span><br><span class="hljs-meta prompt_">$ </span><span class="language-bash">git reset --mixed &lt;commit ID&gt;</span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">将 HEAD 的指向改变，撤销到指定的提交记录，文件未修改</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">相当于调用 <span class="hljs-string">&quot;git reset --mixed&quot;</span> 命令后又做了一次 <span class="hljs-string">&quot;git add&quot;</span></span><br><span class="hljs-meta prompt_">$ </span><span class="language-bash">git reset --soft &lt;commit ID&gt;</span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">将 HEAD 的指向改变，撤销到指定的提交记录，文件也修改了</span><br><span class="hljs-meta prompt_">$ </span><span class="language-bash">git reset --hard &lt;commit ID&gt;</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"># 重置暂存区，但文件不受影响<br># 相当于将用 &quot;git add&quot; 命令更新到暂存区的内容撤出暂存区，可以指定文件<br># 没有指定 <span class="hljs-keyword">commit</span> ID 则默认为当前 HEAD<br>$ git <span class="hljs-keyword">reset</span> [&lt;文件路径&gt;]<br>$ git <span class="hljs-keyword">reset</span> <span class="hljs-comment">--mixed [&lt;文件路径&gt;]</span><br><br># <span class="hljs-comment">--mixed 重置索引，但不重置工作树，更改后的文件标记为未提交（add）的状态。默认操作 （git status 是红色的状态）。</span><br>$ git <span class="hljs-keyword">reset</span> &lt;<span class="hljs-keyword">commit</span> ID&gt;<br>$ git <span class="hljs-keyword">reset</span> <span class="hljs-comment">--mixed &lt;commit ID&gt;</span><br><br># <span class="hljs-comment">--soft 回退后a分支修改的代码被保留并标记为add的状态（git status 是绿色的状态）</span><br># 相当于调用 &quot;git reset --mixed&quot; 命令后又做了一次 &quot;git add&quot;<br>$ git <span class="hljs-keyword">reset</span> <span class="hljs-comment">--soft &lt;commit ID&gt;</span><br><br># <span class="hljs-comment">--hard 重置索引和工作树，并且a分支修改的所有文件和中间的提交，没提交的代码都被丢弃了。</span><br>$ git <span class="hljs-keyword">reset</span> <span class="hljs-comment">--hard &lt;commit ID&gt;</span><br><br># <span class="hljs-comment">--merge 和--hard类似，只不过如果在执行reset命令之前你有改动一些文件并且未提交，merge会保留你的这些修改，hard则不会。【注：如果你的这些修改add过或commit过，merge和hard都将删除你的提交】</span><br># <span class="hljs-comment">--keep 和--hard类似，执行reset之前改动文件如果是a分支修改了的，会提示你修改了相同的文件，不能合并。如果不是a分支修改的文件，会移除缓存区。git status还是可以看到保持了这些修改。</span><br><br></code></pre></td></tr></table></figure>
 <h3 id="git-revert"><a href="#git-revert" class="headerlink" title="git revert"></a>git revert</h3><p>生成一个新的提交来撤销某次提交，此次提交之前的所有提交都会被保留。</p>
 <figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs crystal"><span class="hljs-comment"># 生成一个新的提交来撤销某次提交</span><br><span class="hljs-variable">$ </span>git revert &lt;commit ID&gt;<br></code></pre></td></tr></table></figure>
 <h3 id="git-tag"><a href="#git-tag" class="headerlink" title="git tag"></a>git tag</h3><p>分支很容易被人为移动，并且当有新的提交时，它也会移动。分支很容易被改变，大部分分支还只是临时的，并且还一直在变。<br>你可能会问了：有没有什么可以永远指向某个提交记录的标识呢，比如软件发布新的大版本，或者是修正一些重要的 Bug 或是增加了某些新特性，有没有比分支更好的可以永远指向这些提交的方法呢？<br>当然有了！Git 的 tag 就是干这个用的啊，它们可以（在某种程度上 —— 因为标签可以被删除后重新在另外一个位置创建同名的标签）永久地将某个特定的提交命名为里程碑，然后就可以像分支一样引用了。<br>更难得的是，它们并不会随着新的提交而移动。你也不能切换到某个标签上面进行修改提交，它就像是提交树上的一个锚点，标识了某个特定的位置。</p>
@@ -350,6 +350,17 @@
 
 <h3 id="git-describe"><a href="#git-describe" class="headerlink" title="git describe"></a>git describe</h3><p>由于标签在代码库中起着“锚点”的作用，Git 还为此专门设计了一个命令用来描述离你最近的锚点（也就是标签）</p>
 <figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs reasonml"># &lt;<span class="hljs-built_in">ref</span>&gt; 可以是任何能被 Git 识别成提交记录的引用，如果你没有指定的话，Git 会以你目前所检出的位置（HEAD）。<br>git describe &lt;<span class="hljs-built_in">ref</span>&gt;<br><br># 它输出的结果是这样的：&lt;tag&gt;_&lt;numCommits&gt;_g&lt;hash&gt;<br># tag 表示的是离 <span class="hljs-built_in">ref</span> 最近的标签， numCommits 是表示这个 <span class="hljs-built_in">ref</span> 与 tag 相差有多少个提交记录， hash 表示的是你所给定的 <span class="hljs-built_in">ref</span> 所表示的提交记录哈希值的前几位。<br># <span class="hljs-constructor">C0(<span class="hljs-params">v1</span>)</span> -&gt; C1 -&gt; <span class="hljs-constructor">C2(<span class="hljs-params">main</span>)</span><br>git describe main 会输出：v1_2_gC2 <br></code></pre></td></tr></table></figure>
+
+<h3 id="git-worktree"><a href="#git-worktree" class="headerlink" title="git worktree"></a>git worktree</h3><p>仅需维护一个 repo，又可以同时在多个 branch 上工作，互不影响<br>默认情况下， git init 或 git clone 初始化的 repo，只有一个 worktree，叫做 main worktree<br>在某一个目录下使用 Git 命令，当前目录下要么有 .git 文件夹；要么有 .git 文件，如果只有 .git 文件，里面的内容必须是指向 .git 文件夹的</p>
+<figure class="highlight inform7"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs inform7"># 常用worktree 命令<br>$ git worktree add <span class="hljs-comment">[-f]</span> <span class="hljs-comment">[--detach]</span> <span class="hljs-comment">[--checkout]</span> <span class="hljs-comment">[--lock]</span> <span class="hljs-comment">[-b &lt;new-branch&gt;]</span> &lt;path&gt; <span class="hljs-comment">[&lt;commit-ish&gt;]</span><br>$ git worktree list <span class="hljs-comment">[--porcelain]</span><br>$ git worktree remove <span class="hljs-comment">[-f]</span> &lt;worktree&gt;<br>$ git worktree prune <span class="hljs-comment">[-n]</span> <span class="hljs-comment">[-v]</span> <span class="hljs-comment">[--expire &lt;expire&gt;]</span><br></code></pre></td></tr></table></figure>
+<ul>
+<li>创建一个worktree<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">git worktree add ..<span class="hljs-regexp">/feature/</span>feature2<br></code></pre></td></tr></table></figure>
+目录结构<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs maxima">├── amend-crash-<span class="hljs-built_in">demo</span><br>└── <span class="hljs-built_in">feature</span><br>    └── feature2<br></code></pre></td></tr></table></figure>
+cd ..&#x2F;feature&#x2F;feature2&#x2F; 会发现，这个分支下并不存在 .git 文件夹，却存在一个 .git 文件，打开文件，内容如下：<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">gitdir: <span class="hljs-regexp">/Users/</span>rgyb<span class="hljs-regexp">/Documents/</span>projects<span class="hljs-regexp">/amend-crash-demo/</span>.git<span class="hljs-regexp">/worktrees/</span>feature2<br></code></pre></td></tr></table></figure></li>
+<li>git worktree remove<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs maxima"># 删除一个worktree 参数是文件路径 注意路径前不加 <span class="hljs-string">&quot;/&quot;</span><br>git worktree <span class="hljs-built_in">remove</span> <span class="hljs-built_in">feature</span>/feature2<br></code></pre></td></tr></table></figure>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-comment"># 假设你创建一个 worktree，并在里面有改动，突然间这个worktree 又不需要了，此刻你按照上述命令是不能删掉了，此时就需要 -f 参数来帮忙了</span><br>git worktree <span class="hljs-built_in">remove</span> -f feature/feature2<br></code></pre></td></tr></table></figure>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-comment"># 删除了 worktree，其实在 Git 的文件中，还有很多 administrative 文件是没有用的，为了保持清洁，我们还需要进一步清理</span><br><span class="hljs-comment"># 这个命令就是清洁的兜底操作，可以让我们的工作始终保持整洁</span><br><span class="hljs-attribute">git</span> worktree prune<br></code></pre></td></tr></table></figure></li>
+</ul>
 <h2 id="Git操作场景-🌰"><a href="#Git操作场景-🌰" class="headerlink" title="Git操作场景(🌰)"></a>Git操作场景(🌰)</h2><h3 id="删除掉本地不存在的远程分支"><a href="#删除掉本地不存在的远程分支" class="headerlink" title="删除掉本地不存在的远程分支"></a>删除掉本地不存在的远程分支</h3><p>多人合作开发时，如果远程的分支被其他开发删除掉，在本地执行 git branch –all 依然会显示该远程分支，可使用下列的命令进行删除</p>
 <figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs crystal"><span class="hljs-comment"># 使用 pull 命令，添加 -p 参数</span><br><span class="hljs-variable">$ </span>git pull -p<br><br><span class="hljs-comment"># 等同于下面的命令</span><br><span class="hljs-variable">$ </span>git fetch -p<br><span class="hljs-variable">$ </span>git fetch --prune origin<br></code></pre></td></tr></table></figure>
 <h3 id="只提交某次记录"><a href="#只提交某次记录" class="headerlink" title="只提交某次记录"></a>只提交某次记录</h3><p>发中经常会遇到的情况：我正在解决某个特别棘手的 Bug，为了便于调试而在代码中添加了一些调试命令并向控制台打印了一些信息。<br>这些调试和打印语句都在它们各自的提交记录里。最后我终于找到了造成这个 Bug 的根本原因，解决掉以后觉得沾沾自喜！<br>最后就差把 bugFix 分支里的工作合并回 main 分支了。你可以选择通过 fast-forward 快速合并到 main 分支上，但这样的话 main 分支就会包含我这些调试语句了。你肯定不想这样，应该还有更好的方式</p>
@@ -362,6 +373,57 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">1: git checkout -b</span><br><span class="hljs-meta prompt_">$ </span><span class="language-bash">git checkout -b totallyNotMain o/main</span><br>就可以创建一个名为 totallyNotMain 的分支，它跟踪远程分支 o/main。<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">2: git branch -u</span><br><span class="hljs-meta prompt_">$ </span><span class="language-bash">git branch -u o/main foo</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">这样 foo 就会跟踪 o/main 了。如果当前就在 foo 分支上, 还可以省略 foo：</span><br><span class="hljs-meta prompt_">$ </span><span class="language-bash">git branch -u o/main</span><br></code></pre></td></tr></table></figure>
 <h3 id="代码分支迁移到不同仓库"><a href="#代码分支迁移到不同仓库" class="headerlink" title="代码分支迁移到不同仓库"></a>代码分支迁移到不同仓库</h3><p>当我们需要将分支origin(A)&#x2F;a 迁移到 origin(B)&#x2F;a 并保留分支记录</p>
 <figure class="highlight dsconfig"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs dsconfig">切换到当前<span class="hljs-string">origin</span>(<span class="hljs-string">A</span>) 更换当前仓库为目标仓库<br>$ <span class="hljs-string">git</span> <span class="hljs-string">remote</span> <span class="hljs-built_in">set-url</span> <span class="hljs-string">origin</span> <span class="hljs-string">https</span>://<span class="hljs-string">gitlab</span>.<span class="hljs-string">southinfo</span>.<span class="hljs-string">net</span>/<span class="hljs-string">ecrp-sg-web</span>.<span class="hljs-string">git</span><br>推送当前分支到更换后的目标仓库(需要密码/<span class="hljs-string">ssh</span>认证)<br>$ <span class="hljs-string">git</span> <span class="hljs-string">push</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="代码回滚-reset-x2F-revert"><a href="#代码回滚-reset-x2F-revert" class="headerlink" title="代码回滚(reset&#x2F;revert)"></a>代码回滚(reset&#x2F;revert)</h3><ul>
+<li>结论</li>
+</ul>
+<ol>
+<li>git revert 后会多出一条commit，这里可进行回撤操作</li>
+<li>git reset 直接把之前 commit 删掉，非 git reset –hard 的操作是不会删掉修改代码，如果远程已经有之前代码，需要强推 git push -f</li>
+</ol>
+<ul>
+<li>应用场景</li>
+</ul>
+<ol>
+<li>如果回退分支的代码以后还需要的话用git revert就再好不过了；</li>
+<li>如果分支我就是提错了没用了还不想让别人发现我错的代码，那就git reset吧</li>
+</ol>
+<ul>
+<li><p>git reset<br>develop将a分支合并后，想要不留痕迹的撤回合并。这个时候用git reset就是很好的选择了</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs livecodeserver">develop <span class="hljs-comment">----1      3-----</span><br>             \   /<br>branch <span class="hljs-keyword">a</span>       <span class="hljs-keyword">a</span><br></code></pre></td></tr></table></figure>
+</li>
+<li><p>操作步骤</p>
+</li>
+</ul>
+<ol>
+<li>切换分支到develop</li>
+<li>git log 查看当前分支日志</li>
+<li>我要将develop回退到合并之前的状态，那就是退到 commit 1这了，将commit号复制下来。退出编辑界面。<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-number">3.1</span> a分支的代码我不需要了，以后应该也不需要了<br>  git <span class="hljs-keyword">reset</span> <span class="hljs-number">1</span>（粘贴过来的<span class="hljs-keyword">commit</span>号） <span class="hljs-comment">--hard</span><br><span class="hljs-number">3.2</span> a分支的代码我还需要<br>  git <span class="hljs-keyword">reset</span> <span class="hljs-number">1</span>（粘贴过来的<span class="hljs-keyword">commit</span>号）<br></code></pre></td></tr></table></figure></li>
+<li>将回退后的代码推送到远端 git push origin develop<figure class="highlight subunit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs subunit">![rejected] develop -&gt; develop (non-fast-forward)<br><span class="hljs-keyword">error: </span>无法推送一些引用到 &#x27;git@github.cn:...&#x27;<br>提示：更新被拒绝，因为您当前分支的最新提交落后于其对应的远程分支。<br>。。。<br></code></pre></td></tr></table></figure>
+因为本地分支的代码落后于远端develop分支, 所以这一步需要强行推送 <em>–force</em></li>
+<li>强推<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs maxima">git <span class="hljs-built_in">push</span> <span class="hljs-built_in">origin</span> develop --force<br></code></pre></td></tr></table></figure></li>
+</ol>
+<ul>
+<li><p>git revert<br>还是之前的需求，不想要合并a，只想要没合并a时的样子。</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs livecodeserver">develop <span class="hljs-comment">----1      3-----</span><br>             \   /<br>branch <span class="hljs-keyword">a</span>       <span class="hljs-keyword">a</span><br></code></pre></td></tr></table></figure>
+</li>
+<li><p>操作步骤</p>
+</li>
+</ul>
+<ol>
+<li>切换分支到develop  git checkout develop</li>
+<li>git log 查看当前分支日志</li>
+<li>这次和git reset 不同的是我不能复制 commit 1这个commit号了，我需要复制的是commit 2的commit号。因为revert后面跟的是具体需要哪个已经合并了的分支，而并不是需要会退到哪的commit号。<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">git</span> revert <span class="hljs-number">2</span><br></code></pre></td></tr></table></figure></li>
+<li>push到远端服务器<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs maxima">git <span class="hljs-built_in">push</span> <span class="hljs-built_in">origin</span> develop<br></code></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="解决合并代码-Already-up-to-date-问题"><a href="#解决合并代码-Already-up-to-date-问题" class="headerlink" title="解决合并代码 (Already up-to-date) 问题"></a>解决合并代码 (Already up-to-date) 问题</h3><ul>
+<li>有时我们合并代码会遇到冲突解决的问题, 这个时候如果想取消本次合并如果直接丢弃全部文件会照成远端代码还是保存了本次解决冲突的提交, 当我们重新再合并有冲突的代码就会显示Already up-to-date</li>
+<li>接上个例子, 现在的需求是我之前已经把a分支revert了，但是我现在又需要a分支的代码了，我之前都写过一遍总不能再重新写一遍了。我首先想到的方法，把a分支再merge到develop不就好了。<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs livecodeserver">git <span class="hljs-built_in">merge</span> <span class="hljs-keyword">a</span><br></code></pre></td></tr></table></figure>
+结果<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs applescript">Already up-<span class="hljs-keyword">to</span>-<span class="hljs-built_in">date</span><br></code></pre></td></tr></table></figure>
+因为我们之前提交合并的a分支的代码还在，因此我们并不能在重新合并a分支。</li>
+</ul>
+<p>解决方法: 使用revert之前revert的commit号。在上面的例子中就是git revert 4。于是又新增了一个commit，把之前revert的代码又重新revert回来了, 再继续执行合并操作代码冲突又会提示出来了</p>
+
               
             </div>
             <hr/>
