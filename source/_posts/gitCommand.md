@@ -628,3 +628,16 @@ git revert 2
 git push origin develop
 ```
 
+### 解决合并代码 (Already up-to-date) 问题
++ 有时我们合并代码会遇到冲突解决的问题, 这个时候如果想取消本次合并如果直接丢弃全部文件会照成远端代码还是保存了本次解决冲突的提交, 当我们重新再合并有冲突的代码就会显示Already up-to-date
++ 接上个例子, 现在的需求是我之前已经把a分支revert了，但是我现在又需要a分支的代码了，我之前都写过一遍总不能再重新写一遍了。我首先想到的方法，把a分支再merge到develop不就好了。
+```
+git merge a
+```
+结果
+```
+Already up-to-date
+```
+因为我们之前提交合并的a分支的代码还在，因此我们并不能在重新合并a分支。
+
+解决方法: 使用revert之前revert的commit号。在上面的例子中就是git revert 4。于是又新增了一个commit，把之前revert的代码又重新revert回来了, 再继续执行合并操作代码冲突又会提示出来了
