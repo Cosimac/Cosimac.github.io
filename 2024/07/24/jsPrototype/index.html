@@ -1,0 +1,732 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon/favicon.png">
+  <link rel="icon" href="/img/favicon/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Cosima">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="前言不要为了面试而去背题，匆匆忙忙的，不仅学不进去，背完了几天后马上会忘记。  你可能会说，“没办法，这不是为了能找份工作嘛！”。我想说的是，“那你没开始找工作的时候，咋不好好学习呢。” 好了，上述扯的这些，意思就是让大家不要做收藏家，不要把好文收藏了，就放在收藏夹里吃灰！ 下面为大家简单阐述我对原型和原型链的理解，若是觉得有说的不对的地方，还望直接把页面关闭了，别在我这篇文章上继续浪费时间。（逃">
+<meta property="og:type" content="article">
+<meta property="og:title" content="js原型和原型链">
+<meta property="og:url" content="http://example.com/2024/07/24/jsPrototype/index.html">
+<meta property="og:site_name" content="Cosima">
+<meta property="og:description" content="前言不要为了面试而去背题，匆匆忙忙的，不仅学不进去，背完了几天后马上会忘记。  你可能会说，“没办法，这不是为了能找份工作嘛！”。我想说的是，“那你没开始找工作的时候，咋不好好学习呢。” 好了，上述扯的这些，意思就是让大家不要做收藏家，不要把好文收藏了，就放在收藏夹里吃灰！ 下面为大家简单阐述我对原型和原型链的理解，若是觉得有说的不对的地方，还望直接把页面关闭了，别在我这篇文章上继续浪费时间。（逃">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1337beace1894b31bd868190ddb5ee75~tplv-k3u1fbpfcp-zoom-in-crop-mark:1512:0:0:0.awebp">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/82fb1e5227de446f8ec8f2bbf39a9e26~tplv-k3u1fbpfcp-zoom-in-crop-mark:1512:0:0:0.awebp">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8640c1029037485ca324b2cf61bdf928~tplv-k3u1fbpfcp-zoom-in-crop-mark:1512:0:0:0.awebp">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/dc4cc571148745f4b25545d3a7ccf73d~tplv-k3u1fbpfcp-zoom-in-crop-mark:1512:0:0:0.awebp">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c631b657ca62427a8bdef1a2c145346a~tplv-k3u1fbpfcp-zoom-in-crop-mark:1512:0:0:0.awebp">
+<meta property="article:published_time" content="2024-07-24T06:55:08.000Z">
+<meta property="article:modified_time" content="2024-07-24T06:59:51.020Z">
+<meta property="article:author" content="Cosima">
+<meta property="article:tag" content="js">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1337beace1894b31bd868190ddb5ee75~tplv-k3u1fbpfcp-zoom-in-crop-mark:1512:0:0:0.awebp">
+  
+  
+  
+  <title>js原型和原型链 - Cosima</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.0","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Cosima</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg/bg.webp') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="js原型和原型链"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-07-24 14:55" pubdate>
+          2024年7月24日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          3.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          27 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">js原型和原型链</h1>
+            
+            <div class="markdown-body">
+              
+              <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>不要为了面试而去背题，匆匆忙忙的，不仅学不进去，背完了几天后马上会忘记。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1337beace1894b31bd868190ddb5ee75~tplv-k3u1fbpfcp-zoom-in-crop-mark:1512:0:0:0.awebp" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>你可能会说，“没办法，这不是为了能找份工作嘛！”。我想说的是，“那你没开始找工作的时候，咋不好好学习呢。”</p>
+<p>好了，上述扯的这些，意思就是让大家不要做<strong>收藏家</strong>，不要把好文收藏了，就放在收藏夹里吃灰！</p>
+<p>下面为大家简单阐述我对原型和原型链的理解，若是觉得有说的不对的地方，还望直接把页面关闭了，别在我这篇文章上继续浪费时间。（逃）</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/82fb1e5227de446f8ec8f2bbf39a9e26~tplv-k3u1fbpfcp-zoom-in-crop-mark:1512:0:0:0.awebp" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h2 id="四个规则"><a href="#四个规则" class="headerlink" title="四个规则"></a>四个规则</h2><p>我们先来了解下面引用类型的四个规则：</p>
+<p>1、引用类型，都具有对象特性，即可自由扩展属性。</p>
+<p>2、引用类型，都有一个隐式原型 <code>__proto__</code> 属性，属性值是一个普通的对象。</p>
+<p>3、引用类型，隐式原型 <code>__proto__</code>  的属性值指向它的构造函数的显式原型 <code>prototype</code> 属性值。</p>
+<p>4、当你试图得到一个对象的某个属性时，如果这个对象本身没有这个属性，那么它会去它的隐式原型 <code>__proto__</code>（也就是它的构造函数的显式原型 <code>prototype</code>）中寻找。</p>
+<blockquote>
+<p>引用类型：Object、Array、Function、Date、RegExp。这里我姑且称 <strong>proto</strong> 为隐式原型，没有官方中文叫法，大家都瞎叫居多。</p>
+</blockquote>
+<p>下面我们逐一验证上面几个规则，就会慢慢地理解原型和原型链。</p>
+<h4 id="规则一"><a href="#规则一" class="headerlink" title="规则一"></a>规则一</h4><p>引用类型，都具有对象特性，即可自由扩展属性：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> obj = &#123;&#125;<br><span class="hljs-keyword">const</span> arr = []<br><span class="hljs-keyword">const</span> fn = <span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) &#123;&#125;<br>obj.<span class="hljs-property">a</span> = <span class="hljs-number">1</span><br>arr.<span class="hljs-property">a</span> = <span class="hljs-number">1</span><br>fn.<span class="hljs-property">a</span> = <span class="hljs-number">1</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(obj.<span class="hljs-property">a</span>) <span class="hljs-comment">// 1</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(arr.<span class="hljs-property">a</span>) <span class="hljs-comment">// 1</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(fn.<span class="hljs-property">a</span>) <span class="hljs-comment">// 1</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>这个规则应该比较好理解，Date 和 RegExp 也一样，就不赘述了。</p>
+</blockquote>
+<h4 id="规则二"><a href="#规则二" class="headerlink" title="规则二"></a>规则二</h4><p>引用类型，都有一个隐式原型 <code>__proto__</code> 属性，属性值是一个普通的对象：</p>
+<p>javascript</p>
+<p>代码解读</p>
+<p>复制代码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> obj = &#123;&#125;<br><span class="hljs-keyword">const</span> arr = []<br><span class="hljs-keyword">const</span> fn = <span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) &#123;&#125;<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;obj.__proto__&#x27;</span>, obj.<span class="hljs-property">__proto__</span>)<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;arr.__proto__&#x27;</span>, arr.<span class="hljs-property">__proto__</span>)<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;fn.__proto__&#x27;</span>, fn.<span class="hljs-property">__proto__</span>)<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8640c1029037485ca324b2cf61bdf928~tplv-k3u1fbpfcp-zoom-in-crop-mark:1512:0:0:0.awebp" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h4 id="规则三"><a href="#规则三" class="headerlink" title="规则三"></a>规则三</h4><p>引用类型，隐式原型 <code>__proto__</code> 的属性值指向它的构造函数的显式原型 <code>prototype</code> 属性值：</p>
+<p>javascript</p>
+<p>代码解读</p>
+<p>复制代码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> obj = &#123;&#125;<br><span class="hljs-keyword">const</span> arr = []<br><span class="hljs-keyword">const</span> fn = <span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) &#123;&#125;<br>obj.<span class="hljs-property">__proto__</span> == <span class="hljs-title class_">Object</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span> <span class="hljs-comment">// true</span><br>arr.<span class="hljs-property">__proto__</span> === <span class="hljs-title class_">Array</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span> <span class="hljs-comment">// true</span><br>fn.<span class="hljs-property">__proto__</span> == <span class="hljs-title class_">Function</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span> <span class="hljs-comment">// true</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="规则四"><a href="#规则四" class="headerlink" title="规则四"></a>规则四</h4><p>当你试图得到一个对象的某个属性时，如果这个对象本身没有这个属性，那么它会去它的隐式原型 <code>__proto__</code>（也就是它的构造函数的显式原型 <code>prototype</code>）中寻找：</p>
+<p>javascript</p>
+<p>代码解读</p>
+<p>复制代码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> obj = &#123; <span class="hljs-attr">a</span>: <span class="hljs-number">1</span> &#125;<br>obj.<span class="hljs-property">toString</span> <span class="hljs-comment">// ƒ toString() &#123; [native code] &#125;</span><br></code></pre></td></tr></table></figure>
+
+<p>首先， <code>obj</code>  对象并没有 <code>toString</code>  属性，之所以能获取到 <code>toString</code>  属性，是遵循了第四条规则，从它的构造函数 <code>Object</code>  的 <code>prototype</code>  里去获取。</p>
+<h2 id="一个特例"><a href="#一个特例" class="headerlink" title="一个特例"></a>一个特例</h2><p>我试图想推翻上面的规则，看下面这段代码：</p>
+<p>javascript</p>
+<p>代码解读</p>
+<p>复制代码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">Person</span>(<span class="hljs-params">name</span>) &#123;<br>  <span class="hljs-variable language_">this</span>.<span class="hljs-property">name</span> = name<br>  <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span> <span class="hljs-comment">// 其实这行可以不写，默认返回 this 对象</span><br>  &#125;<br>  <span class="hljs-keyword">var</span> nick = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Person</span>(<span class="hljs-string">&quot;nick&quot;</span>) nick.<span class="hljs-property">toString</span> <span class="hljs-comment">// ƒ toString() &#123; [native code] &#125;</span><br></code></pre></td></tr></table></figure>
+
+<p>按理说， <code>nick</code>  是 <code>Person</code>  构造函数生成的实例，而 <code>Person</code>  的 <code>prototype</code>  并没有 <code>toString</code>  方法，那么为什么， <code>nick</code>  能获取到 <code>toString</code>  方法？</p>
+<p>这里就引出 <code>原型链</code>  的概念了， <code>nick</code>  实例先从自身出发检讨自己，发现并没有 <code>toString</code>  方法。找不到，就往上走，找 <code>Person</code>  构造函数的 <code>prototype</code>  属性，还是没找到。构造函数的 <code>prototype</code>  也是一个对象嘛，那对象的构造函数是 <code>Object</code> ，所以就找到了 <code>Object.prototype</code> 下的 <code>toString</code>  方法。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/dc4cc571148745f4b25545d3a7ccf73d~tplv-k3u1fbpfcp-zoom-in-crop-mark:1512:0:0:0.awebp" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<blockquote>
+<p>上述寻找的过程就形成了原型链的概念，我理解的原型链就是这样一个过程。也不知道哪个人说过一句，JavaScript 里万物皆对象。从上述情况看来，好像是这么个理。🤔</p>
+</blockquote>
+<h2 id="一张图片"><a href="#一张图片" class="headerlink" title="一张图片"></a>一张图片</h2><p>用图片描述原型链：</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c631b657ca62427a8bdef1a2c145346a~tplv-k3u1fbpfcp-zoom-in-crop-mark:1512:0:0:0.awebp" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>最后一个 <code>null</code>，设计上是为了避免死循环而设置的, <code>Object.prototype</code>  的隐式原型指向 <code>null</code>。</p>
+<h2 id="一个方法"><a href="#一个方法" class="headerlink" title="一个方法"></a>一个方法</h2><p><code>instanceof</code>  运算符用于测试构造函数的 <code>prototype</code> 属性是否出现在对象原型链中的任何位置。 <code>instanceof</code>  的简易手写版，如下所示：</p>
+<p>javascript</p>
+<p>代码解读</p>
+<p>复制代码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// 变量R的原型 存在于 变量L的原型链上</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">instance_of</span>(<span class="hljs-params">L, R</span>) &#123;<br>  <span class="hljs-comment">// 验证如果为基本数据类型，就直接返回 false</span><br>  <span class="hljs-keyword">const</span> baseType = [<span class="hljs-string">&#x27;string&#x27;</span>, <span class="hljs-string">&#x27;number&#x27;</span>, <span class="hljs-string">&#x27;boolean&#x27;</span>, <span class="hljs-string">&#x27;undefined&#x27;</span>, <span class="hljs-string">&#x27;symbol&#x27;</span>]<br>  <span class="hljs-keyword">if</span> (baseType.<span class="hljs-title function_">includes</span>(<span class="hljs-keyword">typeof</span> L)) &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span><br>  &#125;<br>  <span class="hljs-keyword">let</span> <span class="hljs-variable constant_">RP</span> = R.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span> <span class="hljs-comment">// 取 R 的显示原型</span><br>  L = L.<span class="hljs-property">__proto__</span> <span class="hljs-comment">// 取 L 的隐式原型</span><br>  <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) &#123;<br>    <span class="hljs-keyword">if</span> (L === <span class="hljs-literal">null</span>) &#123;<br>      <span class="hljs-comment">// 找到最顶层</span><br>      <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span><br>    &#125;<br>    <span class="hljs-keyword">if</span> (L === <span class="hljs-variable constant_">RP</span>) &#123;<br>      <span class="hljs-comment">// 严格相等</span><br>      <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span><br>    &#125;<br>    L = L.<span class="hljs-property">__proto__</span> <span class="hljs-comment">// 没找到继续向上一层原型链查找</span><br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>我们再来看下面这段代码：</p>
+<p>javascript</p>
+<p>代码解读</p>
+<p>复制代码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">Foo</span>(<span class="hljs-params">name</span>) &#123;   <span class="hljs-variable language_">this</span>.<span class="hljs-property">name</span> = name; &#125; <span class="hljs-keyword">var</span> f = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Foo</span>(<span class="hljs-string">&#x27;nick&#x27;</span>) f <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">Foo</span> <span class="hljs-comment">// true</span><br>f <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">Object</span> <span class="hljs-comment">// true</span><br></code></pre></td></tr></table></figure>
+
+<p>上述代码判断流程大致如下：</p>
+<p>1、 <code>f instanceof Foo</code>： <code>f</code>  的隐式原型 <code>__proto__</code>  和 <code>Foo.prototype</code> ，是相等的，所以返回 <code>true</code> 。</p>
+<p>2、 <code>f instanceof Object</code>： <code>f</code>  的隐式原型 <code>__proto__</code> ，和 <code>Object.prototype</code>  不等，所以继续往上走。 <code>f</code>  的隐式原型 <code>__proto__</code>  指向 <code>Foo.prototype</code> ，所以继续用 <code>Foo.prototype.__proto__</code>  去对比 <code>Object.prototype</code> ，这会儿就相等了，因为 <code>Foo.prototype</code>  就是一个普通的对象。</p>
+<blockquote>
+<p>再一次验证万物皆对象。。。。</p>
+</blockquote>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>通过四个特性、一个例子、一张图片、一个方法，大家应该对原型和原型链的关系有了大概的认知。我的认知就是，原型链就是一个过程，原型是原型链这个过程中的一个单位，贯穿整个原型链。就好像你要是看完了不点个赞，我可以顺着网线找到你。</p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6934498361475072014">https://juejin.cn/post/6934498361475072014</a></p>
+
+              
+            </div>
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/js/">#js</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>js原型和原型链</div>
+      <div>http://example.com/2024/07/24/jsPrototype/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Cosima</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年7月24日</div>
+        </div>
+      
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+          
+        </div>
+      </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/07/24/jsModel/" title="前端模块化：CommonJS,AMD,CMD,ES6">
+                        <span class="hidden-mobile">前端模块化：CommonJS,AMD,CMD,ES6</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <i class="iconfont icon-love"></i> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.0/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script>
+  (function() {
+    var enableLang = CONFIG.code_language.enable && CONFIG.code_language.default;
+    var enableCopy = CONFIG.copy_btn;
+    if (!enableLang && !enableCopy) {
+      return;
+    }
+
+    function getBgClass(ele) {
+      return Fluid.utils.getBackgroundLightness(ele) >= 0 ? 'code-widget-light' : 'code-widget-dark';
+    }
+
+    var copyTmpl = '';
+    copyTmpl += '<div class="code-widget">';
+    copyTmpl += 'LANG';
+    copyTmpl += '</div>';
+    jQuery('.markdown-body pre').each(function() {
+      var $pre = jQuery(this);
+      if ($pre.find('code.mermaid').length > 0) {
+        return;
+      }
+      if ($pre.find('span.line').length > 0) {
+        return;
+      }
+
+      var lang = '';
+
+      if (enableLang) {
+        lang = CONFIG.code_language.default;
+        if ($pre[0].children.length > 0 && $pre[0].children[0].classList.length >= 2 && $pre.children().hasClass('hljs')) {
+          lang = $pre[0].children[0].classList[1];
+        } else if ($pre[0].getAttribute('data-language')) {
+          lang = $pre[0].getAttribute('data-language');
+        } else if ($pre.parent().hasClass('sourceCode') && $pre[0].children.length > 0 && $pre[0].children[0].classList.length >= 2) {
+          lang = $pre[0].children[0].classList[1];
+          $pre.parent().addClass('code-wrapper');
+        } else if ($pre.parent().hasClass('markdown-body') && $pre[0].classList.length === 0) {
+          $pre.wrap('<div class="code-wrapper"></div>');
+        }
+        lang = lang.toUpperCase().replace('NONE', CONFIG.code_language.default);
+      }
+      $pre.append(copyTmpl.replace('LANG', lang).replace('code-widget">',
+        getBgClass($pre[0]) + (enableCopy ? ' code-widget copy-btn" data-clipboard-snippet><i class="iconfont icon-copy"></i>' : ' code-widget">')));
+
+      if (enableCopy) {
+        Fluid.utils.createScript('https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js', function() {
+          var clipboard = new window.ClipboardJS('.copy-btn', {
+            target: function(trigger) {
+              var nodes = trigger.parentNode.childNodes;
+              for (var i = 0; i < nodes.length; i++) {
+                if (nodes[i].tagName === 'CODE') {
+                  return nodes[i];
+                }
+              }
+            }
+          });
+          clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.innerHTML = e.trigger.innerHTML.replace('icon-copy', 'icon-success');
+            setTimeout(function() {
+              e.trigger.innerHTML = e.trigger.innerHTML.replace('icon-success', 'icon-copy');
+            }, 2000);
+          });
+        });
+      }
+    });
+  })();
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
