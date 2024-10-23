@@ -1,0 +1,849 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon/favicon.png">
+  <link rel="icon" href="/img/favicon/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Cosima">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="React HooksHooks简介 介绍Hooks之前，首先要说一下React的组件创建方式，一种是类组件，一种是纯函数组件，并且React团队希望，组件不要变成复杂的容器，最好只是数据流的管道。开发者根据需要，组合管道即可。也就是说组件的最佳写法应该是函数，而不是类。  但是，在以往开发中类组件和纯函数组件的区别是很大的，纯函数组件有着类组件不具备的多种特点：  纯函数组件没有状态 纯函数组件">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hooks简介">
+<meta property="og:url" content="http://example.com/2024/07/24/hooks/index.html">
+<meta property="og:site_name" content="Cosima">
+<meta property="og:description" content="React HooksHooks简介 介绍Hooks之前，首先要说一下React的组件创建方式，一种是类组件，一种是纯函数组件，并且React团队希望，组件不要变成复杂的容器，最好只是数据流的管道。开发者根据需要，组合管道即可。也就是说组件的最佳写法应该是函数，而不是类。  但是，在以往开发中类组件和纯函数组件的区别是很大的，纯函数组件有着类组件不具备的多种特点：  纯函数组件没有状态 纯函数组件">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-07-24T05:58:30.000Z">
+<meta property="article:modified_time" content="2024-07-24T05:59:58.739Z">
+<meta property="article:author" content="Cosima">
+<meta property="article:tag" content="js">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>hooks简介 - Cosima</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.0","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+
+  
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Cosima</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg/bg.webp') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="hooks简介"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-07-24 13:58" pubdate>
+          2024年7月24日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          <!-- compatible with older versions-->
+          10k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          <!-- compatible with older versions-->
+          88 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">hooks简介</h1>
+            
+            <div class="markdown-body">
+              
+              <h1 id="React-Hooks"><a href="#React-Hooks" class="headerlink" title="React Hooks"></a><a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=React&spm=1001.2101.3001.7020">React</a> Hooks</h1><h2 id="Hooks简介"><a href="#Hooks简介" class="headerlink" title="Hooks简介"></a>Hooks简介</h2><blockquote>
+<p>介绍Hooks之前，首先要说一下React的组件创建方式，一种是类组件，一种是纯函数组件，并且React团队希望，组件不要变成复杂的容器，最好只是数据流的管道。开发者根据需要，组合管道即可。也就是说组件的最佳写法应该是函数，而不是类。</p>
+</blockquote>
+<p>但是，在以往开发中类组件和纯函数组件的区别是很大的，纯函数组件有着类组件不具备的多种特点：</p>
+<ul>
+<li>纯函数组件没有状态</li>
+<li>纯函数组件没有生命周期</li>
+<li>纯函数组件没有this</li>
+</ul>
+<p>这就注定，我们所推崇的函数组件，只能做UI展示的功能，涉及到状态的管理与切换，不得不用类组件或者redux，但类组件也是有缺点的，比如，遇到简单的页面，代码会显得很重，并且每创建一个类组件，都要去继承一个React实例</p>
+<p><strong>React Hooks：</strong> 就是用函数的形式代替原来的继承类的形式，并且使用预函数的形式管理state，有Hooks可以不再使用类的形式定义组件了。</p>
+<p>这时候认知也要发生变化了，原来把组件分为有状态组件和无状态组件，有状态组件用类的形式声明，无状态组件用函数的形式声明。那现在所有的组件都可以用函数来声明了。</p>
+<p><strong>使用Hooks的优点：</strong></p>
+<ul>
+<li>告别难以理解的Class( this 和 生命周期 的痛点)</li>
+<li>解决业务逻辑难以拆分的问题</li>
+<li>使状态逻辑复用变得简单可行</li>
+<li>函数组件从设计思想上来看更加契合React的理念</li>
+</ul>
+<p><strong>Hooks并非万能：</strong></p>
+<ul>
+<li>Hooks暂时还不能完全的为函数组件补齐类组件地能力（如生命周期的getSnapshotBeforeUpdate、componentDidCatch方法暂时还未实现）</li>
+<li>将类组件的复杂变成函数组件的轻量，可能使用者并不能很好地消化这种复杂</li>
+<li>Hooks在使用层面有着严格地规则约束</li>
+</ul>
+<p><strong>例如：类组件实现计数器：</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">import</span> <span class="hljs-title class_">React</span>, &#123;<span class="hljs-title class_">Component</span>&#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;react&quot;</span>;<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">AddCount</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">Component</span> &#123;<br>    <span class="hljs-title function_">constructor</span>(<span class="hljs-params">props</span>) &#123;<br>        <span class="hljs-variable language_">super</span>(props);<br>        <span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span> = &#123;<br>            count : <span class="hljs-number">0</span><br>        &#125;<br>    &#125;<br>    addcount = <span class="hljs-function">() =&gt;</span> &#123;<br>        <span class="hljs-keyword">let</span> newCount = <span class="hljs-variable language_">this</span>.<span class="hljs-property">state</span>.<span class="hljs-property">count</span>;<br>        <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">setState</span>(&#123;<br>            <span class="hljs-attr">count</span>: newCount += <span class="hljs-number">1</span><br>        &#125;)<br>    &#125;<br>    <span class="hljs-title function_">render</span>(<span class="hljs-params"></span>) &#123;<br>        <span class="hljs-keyword">return</span> (<br>            <span class="language-xml"><span class="hljs-tag">&lt;&gt;</span></span><br><span class="language-xml">                <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>&#123; this.state.count &#125;<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span></span><br><span class="language-xml">                <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">&#123;</span> <span class="hljs-attr">this.addcount</span> &#125;&gt;</span>count++<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span><br><span class="language-xml">            <span class="hljs-tag">&lt;/&gt;</span></span><br>        )<br>    &#125;<br>&#125;<br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-title class_">AddCount</span>;<br></code></pre></td></tr></table></figure>
+
+<p>可以看出来，上面的代码确实很重。因此React队设计了React Hooks。React Hooks就是加强版的函数组件，可以完全不使用 class，就能写出一个全功能的组件</p>
+<p>React Hooks 使得组件尽量写成纯函数，如果需要外部功能和副作用，就用钩子把外部代码”钩”进来。而React Hooks 就是所说的“钩子”。</p>
+<p>那么Hooks要怎么用呢？“你需要写什么功能，就用什么钩子”。对于常见的功能，React为我们提供了一些常用的钩子，当然有特殊需要，我们也可以写自己的钩子。下面是React Hooks为我们提供的默认的四种最常用钩子：</p>
+<ul>
+<li>useState()</li>
+<li>useContext()</li>
+<li>useEffect()</li>
+<li>useReducer()</li>
+</ul>
+<p>不同的钩子为函数引入不同的外部功能，上面四种钩子都带有use前缀，React Hooks约定，钩子一律使用use前缀命名。所以，自己定义的钩子都要命名为useXXX。</p>
+<h2 id="Hook函数（9种）"><a href="#Hook函数（9种）" class="headerlink" title="Hook函数（9种）"></a>Hook函数（9种）</h2><hr>
+<p><strong>1、State Hook</strong></p>
+<p>useState()：状态钩子。纯函数组件没有状态，<strong>用于为函数组件引入state状态, 并进行状态数据的读写操作</strong></p>
+<p><strong>语法、参数及返回值说明:：</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> [xxx, setXxx] = <span class="hljs-title class_">React</span>.<span class="hljs-title function_">useState</span>(initValue) <br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>参数:</strong> 第一次初始化指定的值在内部作缓存</li>
+<li><strong>返回值:</strong> 包含2个元素的数组，第1个为内部当前状态值，第2个为更新状态值的函数</li>
+</ul>
+<p><strong>setXxx()2种写法:</strong></p>
+<ul>
+<li><strong>setXxx(newValue)</strong>: 参数为非函数值，直接指定新的状态值，内部用其覆盖原来的状态值</li>
+<li><strong>setXxx(value &#x3D;&gt; newValue)</strong>: 参数为函数，接收原本的状态值，返回新的状态值，内部用其覆盖原来的状态值</li>
+</ul>
+<p><strong>例如：React Hooks 实现计数器：</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">import</span> <span class="hljs-title class_">React</span>,&#123; useState &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;react&quot;</span>;<br><br><span class="hljs-keyword">const</span> <span class="hljs-title function_">NewCount</span> = (<span class="hljs-params"></span>)=&gt; &#123;<br>    <span class="hljs-keyword">const</span> [ count,setCount ] = <span class="hljs-title function_">useState</span>(<span class="hljs-number">0</span>)<br>    addCount = <span class="hljs-function">()=&gt;</span> &#123;<br>        <span class="hljs-keyword">let</span> newCount = count;<br>        <span class="hljs-title function_">setCount</span>(newCount +=<span class="hljs-number">1</span>)<br>    &#125;<br>   <span class="hljs-keyword">return</span> (<br>       <span class="language-xml"><span class="hljs-tag">&lt;&gt;</span></span><br><span class="language-xml">           <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span> &#123; count &#125;<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span></span><br><span class="language-xml">           <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">&#123;</span> <span class="hljs-attr">addCount</span> &#125;&gt;</span>Count++<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span><br><span class="language-xml">       <span class="hljs-tag">&lt;/&gt;</span></span><br>   )<br>&#125;<br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-title class_">NewCount</span>;<br></code></pre></td></tr></table></figure>
+
+<p>代码看起来更加的轻便简洁，没有了继承，没有了渲染逻辑，没有了<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F&spm=1001.2101.3001.7020">生命周期</a>等</p>
+<hr>
+<p><strong>2、Context Hook</strong></p>
+<p>useContext()：共享状态钩子。<strong>作用就是可以做状态的分发</strong>，在React16.X以后支持，避免了react逐层通过Props传递数据。</p>
+<blockquote>
+<p>Context：一种组件间通信方式, 常用于【祖组件】与【后代组件】间通信</p>
+</blockquote>
+<p><strong>使用语法和说明：</strong></p>
+<ol>
+<li><p>创建Context容器对象：</p>
+ <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> <span class="hljs-title class_">XxxContext</span> = <span class="hljs-title class_">React</span>.<span class="hljs-title function_">createContext</span>()  <br></code></pre></td></tr></table></figure>
+</li>
+<li><p>渲染子组件时，外面包裹xxxContext.Provider， 通过value属性给后代组件传递数据：</p>
+ <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&lt;xxxContext.<span class="hljs-property">Provider</span> value=&#123;数据&#125;&gt;<br>	&lt;子组件/&gt;<br>&lt;/xxxContext.<span class="hljs-property">Provider</span>&gt;<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>后代组件读取数据：</p>
+ <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> &#123;&#125; = <span class="hljs-title function_">useContext</span>(<span class="hljs-title class_">XxxContext</span>)<br></code></pre></td></tr></table></figure></li>
+</ol>
+<p><strong>例如：A组件和B组件需要共享一个状态:</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">import</span> <span class="hljs-title class_">React</span>, &#123; useContext &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;react&quot;</span>;<br><span class="hljs-keyword">const</span> <span class="hljs-title function_">HookTest</span> = (<span class="hljs-params"></span>)=&gt; &#123;<br>    <span class="hljs-keyword">const</span> <span class="hljs-title class_">AppContext</span> = <span class="hljs-title class_">React</span>.<span class="hljs-title function_">createContext</span>();<br>    <span class="hljs-keyword">const</span> <span class="hljs-title function_">A</span> = (<span class="hljs-params"></span>)=&gt; &#123;<br>        <span class="hljs-keyword">const</span> &#123; name &#125; = <span class="hljs-title function_">useContext</span>(<span class="hljs-title class_">AppContext</span>)<br>        <span class="hljs-keyword">return</span> (<br>            <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span></span><br><span class="language-xml">                我是A组件,我的名字是：&#123; name &#125;；</span><br><span class="language-xml">                <span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>我是A的子标签：&#123; name &#125;<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span></span><br><span class="language-xml">            <span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span></span><br>        )<br>    &#125;<br>    <span class="hljs-keyword">const</span> <span class="hljs-title function_">B</span>= (<span class="hljs-params"></span>)=&gt; &#123;<br>        <span class="hljs-keyword">const</span> &#123; name &#125; = <span class="hljs-title function_">useContext</span>(<span class="hljs-title class_">AppContext</span>);<br>        <span class="hljs-keyword">return</span> (<br>            <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>我是B组件,名字是： &#123; name &#125;<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span></span><br>        )<br>    &#125;<br>    <span class="hljs-keyword">return</span> (<br>        <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">AppContext.Provider</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&#123;&#123;</span> <span class="hljs-attr">name:</span> &#x27;张三&#x27;&#125;&#125;&gt;</span></span><br><span class="language-xml">            <span class="hljs-tag">&lt;<span class="hljs-name">A</span> /&gt;</span></span><br><span class="language-xml">            <span class="hljs-tag">&lt;<span class="hljs-name">B</span> /&gt;</span></span><br><span class="language-xml">        <span class="hljs-tag">&lt;/<span class="hljs-name">AppContext.Provider</span>&gt;</span></span><br>    )<br>&#125;<br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-title class_">HookTest</span>;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<p><strong>3、Effect Hook</strong></p>
+<p>useEffect()：副作用钩子。<strong>用来更好的执行副作用操作</strong>(用于模拟类组件中的生命周期钩子)，如异步请求等，在类组件中会把请求放在componentDidMount里面，在函数组件中可以使用useEffect()</p>
+<p><strong>语法和说明:</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> &#123; <br>      <span class="hljs-comment">// 在此可以执行任何带副作用操作</span><br>      <span class="hljs-keyword">return</span> <span class="hljs-function">() =&gt;</span> &#123; <span class="hljs-comment">// 在组件卸载前执行</span><br>        <span class="hljs-comment">// 在此做一些收尾工作, 比如清除定时器/取消订阅等</span><br>      &#125;<br>&#125;, [stateValue]) <span class="hljs-comment">// 如果指定的是[], 回调函数只会在第一次render()后执行</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>参数、返回值说明：</strong></p>
+<ul>
+<li>useEffect()接受两个参数，<strong>第一个参数是要进行的异步操作</strong>，<strong>第二个参数是一个数组</strong>，用来给出Effect的<strong>依赖项</strong>，只要这个数组发生变化，useEffect()就会执行。</li>
+<li>当第二项省略不填时。useEffect()会在每次组件渲染时都会执行useEffect，只要更新就会执行。</li>
+<li>当第二项传 <strong>空数组[ ]</strong> 时，只会在组件挂载后运行一次。</li>
+<li>useEffect()返回值可以是一个函数，在组件销毁的时候会被调用。清理这些副作用可以进行如取消订阅、清除定时器操作，类似于componentWillUnmount。</li>
+</ul>
+<p><strong>React中的副作用操作:</strong></p>
+<ul>
+<li>发ajax请求数据获取</li>
+<li>设置订阅 &#x2F; 启动定时器</li>
+<li>手动更改真实DOM</li>
+</ul>
+<p><strong>useEffect两个注意点：</strong></p>
+<ul>
+<li>React首次渲染和之后的每次渲染都会调用一遍useEffect函数，而之前要用两个生命周期函数分别表示 <strong>首次渲染(componentDidMonut)</strong> 和<strong>更新导致的重新渲染(componentDidUpdate)</strong></li>
+<li>useEffect中定义的函数的执行不会阻碍浏览器更新视图，也就是说这些函数时异步执行的，而componentDidMonut和componentDidUpdate中的代码都是同步执行的。</li>
+</ul>
+<p><strong>总结：</strong> 可以把 useEffect Hook 看做如下三个函数的组合 ：<strong>componentDidMount()、componentDidUpdate()、componentWillUnmount()</strong></p>
+<p>1、类似于componentDidMount的useEffect</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">import</span> &#123; useEffect &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;react&#x27;</span><br><br><span class="hljs-keyword">const</span> <span class="hljs-title function_">Demo</span> = (<span class="hljs-params"></span>) =&gt; &#123;<br>  <span class="hljs-title function_">useEffcet</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>	<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;类似于componentDidMount，通常在此处调用api获取数据&#x27;</span>)<br>  &#125;, [])<br>&#125;<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-title class_">Demo</span><br></code></pre></td></tr></table></figure>
+
+<p>2、类似于componentWillUnmount的useEffect</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">import</span> &#123; useEffect &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;react&#x27;</span><br><br><span class="hljs-keyword">const</span> <span class="hljs-title function_">Demo</span> = (<span class="hljs-params"></span>) =&gt; &#123;<br>  <span class="hljs-title function_">useEffcet</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>	<span class="hljs-keyword">return</span> <span class="hljs-function">() =&gt;</span> &#123;<br>	  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;类似于componentWillUnmount，通常用于清除副作用&#x27;</span>);<br>	&#125;<br>  &#125;, [])<br>&#125;<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-title class_">Demo</span><br></code></pre></td></tr></table></figure>
+
+<p>3、类似于componentDidUpdate的useEffect</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">import</span> &#123; useState,useEffect &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;react&#x27;</span><br><br><span class="hljs-keyword">const</span> <span class="hljs-title function_">Demo</span> = (<span class="hljs-params"></span>) =&gt; &#123;<br>  <span class="hljs-keyword">const</span> [count,setCount] = <span class="hljs-title class_">React</span>.<span class="hljs-title function_">useState</span>(<span class="hljs-number">0</span>)<br>	<br>  <span class="hljs-title function_">useEffcet</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>	<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;当count发生改变时，执行当前区域的代码&#x27;</span>)<br>  &#125;, [count])<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<p><strong>4、Reducer Hook</strong></p>
+<p>useReducer()：Action钩子。在使用React的过程中，如遇到状态管理，一般会用到Redux。而React本身是不提供状态管理的。而useReducer() <strong>提供了状态管理</strong>。</p>
+<p>首先，关于redux我们都知道，其原理是<strong>通过用户在页面中发起action，从而通过reducer方法来改变state，从而实现页面和状态的通信。</strong></p>
+<p>而Reducer的形式是(state, action) &#x3D;&gt; newstate。hooks的形式如下：</p>
+<p><strong>语法格式：</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> [state, dispatch] = <span class="hljs-title function_">useReducer</span>(reducer, initialState)<br></code></pre></td></tr></table></figure>
+
+<p><strong>参数、返回值说明：</strong></p>
+<p>它接受 <strong>reducer函数</strong> 和 <strong>状态的初始值</strong> 作为参数，返回一个<strong>数组</strong>，其中第一项为<strong>当前的状态值</strong>，第二项为<strong>发送action的dispatch函数</strong>。</p>
+<p><strong>例如：使用useReducer()实现一个计数器</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">import</span>  &#123; useReducer &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;react&quot;</span>;<br><span class="hljs-keyword">const</span> <span class="hljs-title function_">HookReducer</span> = (<span class="hljs-params"></span>)=&gt; &#123;<br>    <span class="hljs-keyword">const</span> <span class="hljs-title function_">reducer</span> = (<span class="hljs-params">state,action</span>)=&gt; &#123;<br>        <span class="hljs-keyword">if</span> (action.<span class="hljs-property">type</span> === <span class="hljs-string">&#x27;add&#x27;</span>) &#123;<br>            <span class="hljs-keyword">return</span> &#123;<br>                ...state,<br>                <span class="hljs-attr">count</span>: state.<span class="hljs-property">count</span> + <span class="hljs-number">1</span><br>            &#125;<br>        &#125;<span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-keyword">return</span> state<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">const</span> <span class="hljs-title function_">addCount</span> = (<span class="hljs-params"></span>)=&gt; &#123;<br>        <span class="hljs-title function_">dispatch</span>(&#123;<br>            <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;add&#x27;</span><br>        &#125;)<br>    &#125;<br>    <span class="hljs-keyword">const</span> [state,dispatch ] = <span class="hljs-title function_">useReducer</span>(reducer,&#123;<span class="hljs-attr">count</span>: <span class="hljs-number">0</span>&#125;)<br>    <span class="hljs-keyword">return</span> (<br>        <span class="language-xml"><span class="hljs-tag">&lt;&gt;</span></span><br><span class="language-xml">            <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>&#123;state.count&#125;<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span></span><br><span class="language-xml">            <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">&#123;</span> <span class="hljs-attr">addCount</span> &#125;&gt;</span>useReducer<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span><br><span class="language-xml">        <span class="hljs-tag">&lt;/&gt;</span></span><br>    )<br>&#125;<br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-title class_">HookReducer</span>;<br></code></pre></td></tr></table></figure>
+
+<p>通过代码可以看到，使用useReducer()代替了Redux的功能，但useReducer无法提供中间件等功能，假如有这些需求，还是需要用到redux。</p>
+<hr>
+<p><strong>5、Ref Hook</strong></p>
+<p>userRefef()：Ref Hook可以<strong>在函数组件中存储、查找组件内的标签或任意其它数据</strong></p>
+<p><strong>语法和参数说明：</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> refContainer = <span class="hljs-title function_">useRef</span>()<br></code></pre></td></tr></table></figure>
+
+<p>useRef返回一个可变的ref对象，useRef接受一个参数绑定在返回的ref对象的current属性上，返回的ref对象在整个生命周期中保持不变。</p>
+<p>作用：保存标签对象，功能与React.createRef()一样</p>
+<p><strong>例子：input上绑定一个ref，使得input在渲染后自动焦点聚焦</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">import</span>&#123; useRef,useEffect&#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;react&quot;</span>;<br><span class="hljs-keyword">const</span> <span class="hljs-title function_">RefComponent</span> = (<span class="hljs-params"></span>) =&gt; &#123;<br>    <span class="hljs-keyword">let</span> inputRef = <span class="hljs-title function_">useRef</span>(<span class="hljs-literal">null</span>);<br>    <span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>        inputRef.<span class="hljs-property">current</span>.<span class="hljs-title function_">focus</span>();<br>    &#125;)<br>    <span class="hljs-keyword">return</span> (<br>        <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text&quot;</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">&#123;inputRef&#125;/</span>&gt;</span></span><br>    ) <br>&#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<p><strong>6、Memo Hook</strong></p>
+<p>useMemo()： 主要<strong>用来解决使用React hooks产生的无用渲染的性能问题</strong>。</p>
+<p><strong>语法和参数说明：</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> cacheSomething = <span class="hljs-title function_">useMemo</span>(create,deps)<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><code>create</code>：第一个参数为一个函数，函数的返回值作为缓存值</li>
+<li><code>deps</code>： 第二个参数为一个数组，存放当前 useMemo 的依赖项，在函数组件下一次执行的时候，会对比 deps 依赖项里面的状态，是否有改变，如果有改变重新执行 create ，得到新的缓存值。</li>
+<li><code>cacheSomething</code>：返回值，执行 create 的返回值。如果 deps 中有依赖项改变，返回的重新执行 create 产生的值，否则取上一次缓存</li>
+</ul>
+<p>使用function的形式来声明组件，失去了shouldCompnentUpdate（在组件更新之前）这个生命周期，也就是说没有办法通过组件更新前条件来决定组件是否更新。</p>
+<p>而且在函数组件中，也不再区分mount和update两个状态，这意味着函数组件的每一次调用都会执行内部的所有逻辑，就带来了非常大的性能损耗。</p>
+<p><strong>useMemo原理：</strong></p>
+<p>useMemo 会记录上一次执行 create 的返回值，并把它绑定在函数组件对应的 fiber 对象上，只要组件不销毁，缓存值就一直存在，但是 deps 中如果有一项改变，就会重新执行 create ，返回值作为新的值记录到 fiber 对象上。</p>
+<p><strong>useMemo应用场景：</strong></p>
+<ul>
+<li>可以缓存 element 对象，从而达到按条件渲染组件，优化性能的作用。</li>
+<li>如果组件中不期望每次 render 都重新计算一些值，可以利用 useMemo 把它缓存起来。</li>
+<li>可以把函数和属性缓存起来，作为 PureComponent 的绑定方法，或者配合其他Hooks一起使用</li>
+</ul>
+<hr>
+<p><strong>7、Callback Hook</strong></p>
+<p>useCallback()： 主要<strong>是为了性能的优化</strong></p>
+<p><strong>useCallback(fn, deps) 相当于 useMemo(() &#x3D;&gt; fn, deps)</strong></p>
+<p>可以认为是对依赖项的监听，接受一个<strong>回调函数</strong>和<strong>依赖项数组</strong>。</p>
+<ul>
+<li>useCallback会返回一个函数的memoized(记忆的)值。</li>
+<li>该回调函数仅在某个依赖项改变时才会</li>
+<li>在依赖不变的情况下，多次定义的时候，返回的值是相同的</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">import</span> &#123;useState,useCallback&#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;react&quot;</span>;<br><br><span class="hljs-keyword">const</span> <span class="hljs-title function_">CallbackComponent</span> = (<span class="hljs-params"></span>) =&gt; &#123;<br>    <span class="hljs-keyword">let</span> [count, setCount] = <span class="hljs-title function_">useState</span>(<span class="hljs-number">1</span>);<br>    <span class="hljs-keyword">let</span> [num, setNum] = <span class="hljs-title function_">useState</span>(<span class="hljs-number">1</span>);<br><br>    <span class="hljs-keyword">const</span> memoized = <span class="hljs-title function_">useCallback</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>        <span class="hljs-keyword">return</span> num;<br>    &#125;, [count])<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;记忆：&quot;</span>, <span class="hljs-title function_">memoized</span>());<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;原始：&quot;</span>, num);<br>   <span class="hljs-keyword">return</span> (<br>        <span class="language-xml"><span class="hljs-tag">&lt;&gt;</span></span><br><span class="language-xml">            <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">&#123;()</span> =&gt;</span> &#123;setCount(count + 1)&#125;&#125;&gt; count+<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span><br><span class="language-xml">            <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">&#123;()</span> =&gt;</span> &#123;setNum(num + 1)&#125;&#125;&gt; num+<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span><br><span class="language-xml">        <span class="hljs-tag">&lt;/&gt;</span></span><br>    )<br>&#125;<br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-title class_">CallbackComponent</span><br></code></pre></td></tr></table></figure>
+
+<p>如果没有传入依赖项数组，那么记忆函数在每次渲染的时候都会更新。</p>
+<hr>
+<p><strong>8、LayoutEffect Hook</strong></p>
+<p>useLayoutEffect() ：和useEffect相同，<strong>都是用来执行副作用，但是它会在所有的DOM变更之后同步调用effect</strong>。useLayoutEffect和useEffect最大的区别就是一个是同步，一个是异步。</p>
+<p>从这个Hook的名字上也可以看出，它主要用来读取DOM布局并触发同步渲染，在浏览器执行绘制之前，useLayoutEffect 内部的更新计划将被同步刷新。</p>
+<p>官网建议还是尽可能的是使用标准的useEffec以避免阻塞视觉更新。</p>
+<hr>
+<p><strong>9、ImperativeHandle Hook</strong></p>
+<p>useImperativeHandle()： 可以<strong>在使用 ref 时自定义暴露给父组件的实例值。</strong></p>
+<p>就是说：当使用父组件把ref传递给子组件的时候，这个Hook允许在子组件中把自定义实例附加到父组件传过来的ref上，有利于父组件控制子组件。</p>
+<p><strong>使用方式：</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">import</span> &#123;useEffect,useRef,useImperativeHandle&#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;react&quot;</span>;<br><span class="hljs-keyword">import</span> &#123;forwardRef&#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;react&quot;</span>;<br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">FancyInput</span>(<span class="hljs-params">props, ref</span>) &#123;<br>    <span class="hljs-keyword">const</span> inputRef = <span class="hljs-title function_">useRef</span>();<br>    <span class="hljs-title function_">useImperativeHandle</span>(ref, <span class="hljs-function">() =&gt;</span> (&#123;<br>        <span class="hljs-attr">focus</span>: <span class="hljs-function">() =&gt;</span> &#123;<br>            inputRef.<span class="hljs-property">current</span>.<span class="hljs-property">value</span>=<span class="hljs-string">&quot;Hello&quot;</span>;<br>        &#125;<br>    &#125;));<br>    <span class="hljs-keyword">return</span> <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">&#123;inputRef&#125;</span> /&gt;</span></span>;<br>&#125;<br><span class="hljs-title class_">FancyInput</span> = <span class="hljs-title function_">forwardRef</span>(<span class="hljs-title class_">FancyInput</span>);<br><br><span class="hljs-keyword">const</span> <span class="hljs-title function_">ImperativeHandleTest</span>=(<span class="hljs-params"></span>) =&gt; &#123;<br>    <span class="hljs-keyword">let</span> ref = <span class="hljs-title function_">useRef</span>(<span class="hljs-literal">null</span>);<br>    <span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(ref);<br>        ref.<span class="hljs-property">current</span>.<span class="hljs-title function_">focus</span>();<br>    &#125;)<br>    <span class="hljs-keyword">return</span> (<br>        <span class="language-xml"><span class="hljs-tag">&lt;&gt;</span></span><br><span class="language-xml">            <span class="hljs-tag">&lt;<span class="hljs-name">FancyInput</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">&#123;ref&#125;/</span>&gt;</span></span><br><span class="language-xml">        <span class="hljs-tag">&lt;/&gt;</span></span><br>    )<br>&#125;<br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-title class_">ImperativeHandleTest</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="自定义Hooks"><a href="#自定义Hooks" class="headerlink" title="自定义Hooks"></a>自定义Hooks</h2><blockquote>
+<p>有时候我们需要创建自己想要的Hooks，来满足更便捷的开发，就是根据业务场景对其它Hooks进行组装，从而得到满足自己需求的钩子。</p>
+</blockquote>
+<p><strong>自定义 Hooks：是一个函数，其名称以 “use” 开头，函数内部可以调用其他的 Hook</strong></p>
+<p><strong>自定义Hooks：可以封装状态，能够更好的实现状态共享</strong></p>
+<p>自定义hooks可以说成是一种约定而不是功能。当一个函数以use开头并且在函数内部调用其他hooks，那么这个函数就可以成为自定义hooks</p>
+<p><strong>例如：</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">import</span> &#123; useState,useEffect &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;react&quot;</span>;<br><span class="hljs-keyword">const</span> <span class="hljs-title function_">usePerson</span> = (<span class="hljs-params">&#123;name&#125;</span>) =&gt; &#123;<br>    <span class="hljs-keyword">const</span> [loading, setLoading] = <span class="hljs-title function_">useState</span>(<span class="hljs-literal">true</span>)<br>    <span class="hljs-keyword">const</span> [person, setPerson] = <span class="hljs-title function_">useState</span>(&#123;&#125;)<br><br>    <span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>        <span class="hljs-title function_">setLoading</span>(<span class="hljs-literal">true</span>)<br>        <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">()=&gt;</span> &#123;<br>            <span class="hljs-title function_">setLoading</span>(<span class="hljs-literal">false</span>)<br>            <span class="hljs-title function_">setPerson</span>(&#123;name&#125;)<br>        &#125;,<span class="hljs-number">2000</span>)<br>    &#125;,[name])<br>    <span class="hljs-keyword">return</span> [loading,person]<br>&#125;<br><span class="hljs-keyword">const</span> <span class="hljs-title function_">AsyncPage</span> = (<span class="hljs-params">name</span>)=&gt; &#123;<br>    <span class="hljs-keyword">const</span> [loading,person] = <span class="hljs-title function_">usePerson</span>(name)<br>    <span class="hljs-keyword">return</span> (<br>        <span class="language-xml"><span class="hljs-tag">&lt;&gt;</span></span><br><span class="language-xml">            &#123;loading?<span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>Loading...<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>:<span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>&#123; person.name &#125;<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>&#125;</span><br><span class="language-xml">        <span class="hljs-tag">&lt;/&gt;</span></span><br>    )<br>&#125;<br><br><span class="hljs-keyword">const</span> <span class="hljs-title function_">PersonPage</span> = (<span class="hljs-params"></span>)=&gt; &#123;<br>    <span class="hljs-keyword">const</span> [state,setState] = <span class="hljs-title function_">useState</span>(<span class="hljs-string">&#x27;&#x27;</span>)<br>    <span class="hljs-keyword">const</span> <span class="hljs-title function_">changeName</span> = (<span class="hljs-params">name</span>)=&gt; &#123;<br>        <span class="hljs-title function_">setState</span>(name)<br>    &#125;<br>    <span class="hljs-keyword">return</span> (<br>        <span class="language-xml"><span class="hljs-tag">&lt;&gt;</span></span><br><span class="language-xml">            <span class="hljs-tag">&lt;<span class="hljs-name">AsyncPage</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&#123;</span> <span class="hljs-attr">state</span> &#125; /&gt;</span></span><br><span class="language-xml">            <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">&#123;</span> ()=&gt;</span> &#123; changeName(&#x27;郭靖&#x27;)&#125;&#125;&gt;郭靖<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span><br><span class="language-xml">            <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">&#123;</span> ()=&gt;</span> &#123; changeName(&#x27;黄蓉&#x27;)&#125;&#125;&gt;黄蓉<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span><br><span class="language-xml">        <span class="hljs-tag">&lt;/&gt;</span></span><br>    )<br>&#125;<br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-title class_">PersonPage</span>;<br><br></code></pre></td></tr></table></figure>
+
+<p>上面代码中，封装成了自己的Hooks，便于共享。其中，usePerson()为自定义Hooks它接受一个字符串，返回一个数组，数组中包括两个数据的状态，之后在使用usePerson()时，会根据传入的参数不同而返回不同的状态，然后很简便的应用于我们的页面中。</p>
+<p>这是一种非常简单的自定义Hook。如果项目大的话使用自定义Hook会抽离可以抽离公共代码，极大的减少我们的代码量，提高开发效率。</p>
+
+              
+            </div>
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/js/">#js</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>hooks简介</div>
+      <div>http://example.com/2024/07/24/hooks/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Cosima</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年7月24日</div>
+        </div>
+      
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+          
+        </div>
+      </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/07/24/interview/" title="2024前端高频面试题之-- JS篇">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">2024前端高频面试题之-- JS篇</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/07/24/callapplybind/" title="call、apply、bind的区别与应用场景">
+                        <span class="hidden-mobile">call、apply、bind的区别与应用场景</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <i class="iconfont icon-love"></i> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.0/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script>
+  (function() {
+    var enableLang = CONFIG.code_language.enable && CONFIG.code_language.default;
+    var enableCopy = CONFIG.copy_btn;
+    if (!enableLang && !enableCopy) {
+      return;
+    }
+
+    function getBgClass(ele) {
+      return Fluid.utils.getBackgroundLightness(ele) >= 0 ? 'code-widget-light' : 'code-widget-dark';
+    }
+
+    var copyTmpl = '';
+    copyTmpl += '<div class="code-widget">';
+    copyTmpl += 'LANG';
+    copyTmpl += '</div>';
+    jQuery('.markdown-body pre').each(function() {
+      var $pre = jQuery(this);
+      if ($pre.find('code.mermaid').length > 0) {
+        return;
+      }
+      if ($pre.find('span.line').length > 0) {
+        return;
+      }
+
+      var lang = '';
+
+      if (enableLang) {
+        lang = CONFIG.code_language.default;
+        if ($pre[0].children.length > 0 && $pre[0].children[0].classList.length >= 2 && $pre.children().hasClass('hljs')) {
+          lang = $pre[0].children[0].classList[1];
+        } else if ($pre[0].getAttribute('data-language')) {
+          lang = $pre[0].getAttribute('data-language');
+        } else if ($pre.parent().hasClass('sourceCode') && $pre[0].children.length > 0 && $pre[0].children[0].classList.length >= 2) {
+          lang = $pre[0].children[0].classList[1];
+          $pre.parent().addClass('code-wrapper');
+        } else if ($pre.parent().hasClass('markdown-body') && $pre[0].classList.length === 0) {
+          $pre.wrap('<div class="code-wrapper"></div>');
+        }
+        lang = lang.toUpperCase().replace('NONE', CONFIG.code_language.default);
+      }
+      $pre.append(copyTmpl.replace('LANG', lang).replace('code-widget">',
+        getBgClass($pre[0]) + (enableCopy ? ' code-widget copy-btn" data-clipboard-snippet><i class="iconfont icon-copy"></i>' : ' code-widget">')));
+
+      if (enableCopy) {
+        Fluid.utils.createScript('https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js', function() {
+          var clipboard = new window.ClipboardJS('.copy-btn', {
+            target: function(trigger) {
+              var nodes = trigger.parentNode.childNodes;
+              for (var i = 0; i < nodes.length; i++) {
+                if (nodes[i].tagName === 'CODE') {
+                  return nodes[i];
+                }
+              }
+            }
+          });
+          clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.innerHTML = e.trigger.innerHTML.replace('icon-copy', 'icon-success');
+            setTimeout(function() {
+              e.trigger.innerHTML = e.trigger.innerHTML.replace('icon-success', 'icon-copy');
+            }, 2000);
+          });
+        });
+      }
+    });
+  })();
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
